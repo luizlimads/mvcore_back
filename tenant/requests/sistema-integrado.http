@@ -1,0 +1,44 @@
+### Sistema Integrado
+
+GET http://127.0.0.1:8000/v1/tenant/sistema-integrado/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMjQyNDA0LCJpYXQiOjE3NTEyMDY0MDQsImp0aSI6ImM0NjY4ZWNkZTM4YzRhNTNiMWNkZDA3MWZkMmRhNWNmIiwidXNlcl9pZCI6ImUwOTNhYmRhLTEwZTMtNDExZS1hOWE2LTYyYmM1NzlhMWQ4NiJ9.3DY81qKj068QZFy6OglPPjGkJFL3MI7NhvhfAK1_5mQ
+
+###
+
+POST http://127.0.0.1:8000/v1/tenant/sistema-integrado/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+Content-Type: application/json
+
+{
+    "nome": "LinX"
+}
+
+###
+
+GET http://127.0.0.1:8000/v1/tenant/sistema-integrado/05912d89-6d0b-4801-b681-d3fa97ba5f9b/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+
+###
+
+PATCH http://127.0.0.1:8000/v1/tenant/sistema-integrado/05912d89-6d0b-4801-b681-d3fa97ba5f9b/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+Content-Type: application/json
+
+{
+    "nome": "Linx 2"
+}
+
+###
+
+PUT http://127.0.0.1:8000/v1/tenant/sistema-integrado/05912d89-6d0b-4801-b681-d3fa97ba5f9b/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+Content-Type: application/json
+
+{
+    "nome": "Linx 3"
+}
+
+###
+
+DELETE http://127.0.0.1:8000/v1/tenant/sistema-integrado/05912d89-6d0b-4801-b681-d3fa97ba5f9b/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4

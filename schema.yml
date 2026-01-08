@@ -1,0 +1,4239 @@
+openapi: 3.0.3
+info:
+  title: MVCORE API
+  version: 1.0.0
+  description: Plataforma web destinada à consolidação, visualização e análise de
+    indicadores de desempenho empresarial focada em varejo.
+paths:
+  /auth/jwt/create/:
+    post:
+      operationId: auth_jwt_create_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /auth/jwt/refresh/:
+    post:
+      operationId: auth_jwt_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /auth/jwt/verify/:
+    post:
+      operationId: auth_jwt_verify_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+  /auth/token/login/:
+    post:
+      operationId: auth_token_login_create
+      description: Use this endpoint to obtain user authentication token.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenCreate'
+          description: ''
+  /auth/token/logout/:
+    post:
+      operationId: auth_token_logout_create
+      description: Use this endpoint to logout user (remove user authentication token).
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /auth/users/:
+    get:
+      operationId: auth_users_list
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+    post:
+      operationId: auth_users_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreate'
+          description: ''
+  /auth/users/{id}/:
+    get:
+      operationId: auth_users_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this usuario.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: auth_users_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this usuario.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: auth_users_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this usuario.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: auth_users_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this usuario.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /auth/users/activation/:
+    post:
+      operationId: auth_users_activation_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Activation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Activation'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activation'
+          description: ''
+  /auth/users/me/:
+    get:
+      operationId: auth_users_me_retrieve
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: auth_users_me_update
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: auth_users_me_partial_update
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: auth_users_me_destroy
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /auth/users/resend_activation/:
+    post:
+      operationId: auth_users_resend_activation_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+  /auth/users/reset_email/:
+    post:
+      operationId: auth_users_reset_email_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+  /auth/users/reset_email_confirm/:
+    post:
+      operationId: auth_users_reset_email_confirm_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirm'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsernameResetConfirm'
+          description: ''
+  /auth/users/reset_password/:
+    post:
+      operationId: auth_users_reset_password_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+  /auth/users/reset_password_confirm/:
+    post:
+      operationId: auth_users_reset_password_confirm_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordResetConfirm'
+          description: ''
+  /auth/users/set_email/:
+    post:
+      operationId: auth_users_set_email_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetUsername'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetUsername'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetUsername'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetUsername'
+          description: ''
+  /auth/users/set_password/:
+    post:
+      operationId: auth_users_set_password_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetPasswordRetype'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetPasswordRetype'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetPasswordRetype'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetPasswordRetype'
+          description: ''
+  /v1/financeiro/categoria-financeira/:
+    get:
+      operationId: v1_financeiro_categoria_financeira_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoriaFinanceira'
+          description: ''
+    post:
+      operationId: v1_financeiro_categoria_financeira_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriaFinanceira'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoriaFinanceira'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoriaFinanceira'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriaFinanceira'
+          description: ''
+  /v1/financeiro/categoria-financeira/{id}/:
+    get:
+      operationId: v1_financeiro_categoria_financeira_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriaFinanceira'
+          description: ''
+    put:
+      operationId: v1_financeiro_categoria_financeira_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriaFinanceira'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoriaFinanceira'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoriaFinanceira'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriaFinanceira'
+          description: ''
+    patch:
+      operationId: v1_financeiro_categoria_financeira_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoriaFinanceira'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoriaFinanceira'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoriaFinanceira'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriaFinanceira'
+          description: ''
+    delete:
+      operationId: v1_financeiro_categoria_financeira_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /v1/financeiro/conta-financeira/:
+    get:
+      operationId: v1_financeiro_conta_financeira_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContaFinanceira'
+          description: ''
+    post:
+      operationId: v1_financeiro_conta_financeira_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContaFinanceira'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ContaFinanceira'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ContaFinanceira'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContaFinanceira'
+          description: ''
+  /v1/financeiro/conta-financeira/{id}/:
+    get:
+      operationId: v1_financeiro_conta_financeira_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContaFinanceira'
+          description: ''
+    put:
+      operationId: v1_financeiro_conta_financeira_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContaFinanceira'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ContaFinanceira'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ContaFinanceira'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContaFinanceira'
+          description: ''
+    patch:
+      operationId: v1_financeiro_conta_financeira_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedContaFinanceira'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedContaFinanceira'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedContaFinanceira'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContaFinanceira'
+          description: ''
+    delete:
+      operationId: v1_financeiro_conta_financeira_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /v1/financeiro/instituicao-financeira/:
+    get:
+      operationId: v1_financeiro_instituicao_financeira_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InstituicaoFinanceira'
+          description: ''
+    post:
+      operationId: v1_financeiro_instituicao_financeira_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstituicaoFinanceira'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstituicaoFinanceira'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstituicaoFinanceira'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstituicaoFinanceira'
+          description: ''
+  /v1/financeiro/instituicao-financeira/{id}/:
+    get:
+      operationId: v1_financeiro_instituicao_financeira_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstituicaoFinanceira'
+          description: ''
+    put:
+      operationId: v1_financeiro_instituicao_financeira_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstituicaoFinanceira'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstituicaoFinanceira'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstituicaoFinanceira'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstituicaoFinanceira'
+          description: ''
+    patch:
+      operationId: v1_financeiro_instituicao_financeira_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInstituicaoFinanceira'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedInstituicaoFinanceira'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedInstituicaoFinanceira'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstituicaoFinanceira'
+          description: ''
+    delete:
+      operationId: v1_financeiro_instituicao_financeira_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /v1/financeiro/lancamento/:
+    get:
+      operationId: v1_financeiro_lancamento_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LancamentoDetail'
+          description: ''
+    post:
+      operationId: v1_financeiro_lancamento_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lancamento'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Lancamento'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Lancamento'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lancamento'
+          description: ''
+  /v1/financeiro/lancamento/{id}/:
+    get:
+      operationId: v1_financeiro_lancamento_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lancamento'
+          description: ''
+    put:
+      operationId: v1_financeiro_lancamento_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lancamento'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Lancamento'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Lancamento'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lancamento'
+          description: ''
+    patch:
+      operationId: v1_financeiro_lancamento_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLancamento'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLancamento'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLancamento'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lancamento'
+          description: ''
+    delete:
+      operationId: v1_financeiro_lancamento_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /v1/fornecedor/:
+    get:
+      operationId: v1_fornecedor_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Fornecedor'
+          description: ''
+    post:
+      operationId: v1_fornecedor_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fornecedor'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Fornecedor'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Fornecedor'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fornecedor'
+          description: ''
+  /v1/fornecedor/{id}/:
+    get:
+      operationId: v1_fornecedor_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fornecedor'
+          description: ''
+    put:
+      operationId: v1_fornecedor_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fornecedor'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Fornecedor'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Fornecedor'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fornecedor'
+          description: ''
+    patch:
+      operationId: v1_fornecedor_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFornecedor'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedFornecedor'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedFornecedor'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fornecedor'
+          description: ''
+    delete:
+      operationId: v1_fornecedor_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /v1/funcionario/:
+    get:
+      operationId: v1_funcionario_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Funcionario'
+          description: ''
+    post:
+      operationId: v1_funcionario_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Funcionario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Funcionario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Funcionario'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Funcionario'
+          description: ''
+  /v1/funcionario/{id}/:
+    get:
+      operationId: v1_funcionario_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Funcionario'
+          description: ''
+    put:
+      operationId: v1_funcionario_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Funcionario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Funcionario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Funcionario'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Funcionario'
+          description: ''
+    patch:
+      operationId: v1_funcionario_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFuncionario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedFuncionario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedFuncionario'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Funcionario'
+          description: ''
+    delete:
+      operationId: v1_funcionario_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /v1/integrador/maestriabi/estoques/:
+    get:
+      operationId: v1_integrador_maestriabi_estoques_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EstoqueBI'
+          description: ''
+  /v1/integrador/maestriabi/produtos/:
+    get:
+      operationId: v1_integrador_maestriabi_produtos_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProdutoBI'
+          description: ''
+  /v1/integrador/maestriabi/vendas/:
+    get:
+      operationId: v1_integrador_maestriabi_vendas_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VendaBI'
+          description: ''
+  /v1/integrador/ssotica/estoque/:
+    post:
+      operationId: v1_integrador_ssotica_estoque_create
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /v1/integrador/ssotica/financeiro/:
+    post:
+      operationId: v1_integrador_ssotica_financeiro_create
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /v1/integrador/ssotica/venda/:
+    post:
+      operationId: v1_integrador_ssotica_venda_create
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /v1/produto/:
+    get:
+      operationId: v1_produto_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Produto'
+          description: ''
+    post:
+      operationId: v1_produto_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Produto'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Produto'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Produto'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+          description: ''
+  /v1/produto/{id}/:
+    get:
+      operationId: v1_produto_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+          description: ''
+    put:
+      operationId: v1_produto_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Produto'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Produto'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Produto'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+          description: ''
+    patch:
+      operationId: v1_produto_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProduto'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProduto'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProduto'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+          description: ''
+    delete:
+      operationId: v1_produto_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /v1/produto/estoque/:
+    get:
+      operationId: v1_produto_estoque_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Estoque'
+          description: ''
+    post:
+      operationId: v1_produto_estoque_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Estoque'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Estoque'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Estoque'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Estoque'
+          description: ''
+  /v1/produto/estoque/{id}/:
+    get:
+      operationId: v1_produto_estoque_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Estoque'
+          description: ''
+    put:
+      operationId: v1_produto_estoque_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Estoque'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Estoque'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Estoque'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Estoque'
+          description: ''
+    patch:
+      operationId: v1_produto_estoque_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEstoque'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEstoque'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEstoque'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Estoque'
+          description: ''
+    delete:
+      operationId: v1_produto_estoque_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /v1/tenant/:
+    get:
+      operationId: v1_tenant_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tenant'
+          description: ''
+    post:
+      operationId: v1_tenant_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TenantCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TenantCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantCreate'
+          description: ''
+  /v1/tenant/{id}/:
+    get:
+      operationId: v1_tenant_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+          description: ''
+    put:
+      operationId: v1_tenant_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TenantCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TenantCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantCreate'
+          description: ''
+    patch:
+      operationId: v1_tenant_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTenantCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTenantCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTenantCreate'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantCreate'
+          description: ''
+    delete:
+      operationId: v1_tenant_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /v1/tenant/loja/:
+    get:
+      operationId: v1_tenant_loja_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Loja'
+          description: ''
+    post:
+      operationId: v1_tenant_loja_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Loja'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Loja'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Loja'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Loja'
+          description: ''
+  /v1/tenant/loja/{id}/:
+    get:
+      operationId: v1_tenant_loja_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Loja'
+          description: ''
+    put:
+      operationId: v1_tenant_loja_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Loja'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Loja'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Loja'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Loja'
+          description: ''
+    patch:
+      operationId: v1_tenant_loja_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLoja'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLoja'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLoja'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Loja'
+          description: ''
+    delete:
+      operationId: v1_tenant_loja_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /v1/tenant/sistema-integrado/:
+    get:
+      operationId: v1_tenant_sistema_integrado_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SistemaIntegrado'
+          description: ''
+    post:
+      operationId: v1_tenant_sistema_integrado_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SistemaIntegrado'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SistemaIntegrado'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SistemaIntegrado'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SistemaIntegrado'
+          description: ''
+  /v1/tenant/sistema-integrado/{id}/:
+    get:
+      operationId: v1_tenant_sistema_integrado_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SistemaIntegrado'
+          description: ''
+    put:
+      operationId: v1_tenant_sistema_integrado_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SistemaIntegrado'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SistemaIntegrado'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SistemaIntegrado'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SistemaIntegrado'
+          description: ''
+    patch:
+      operationId: v1_tenant_sistema_integrado_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSistemaIntegrado'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSistemaIntegrado'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSistemaIntegrado'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SistemaIntegrado'
+          description: ''
+    delete:
+      operationId: v1_tenant_sistema_integrado_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /v1/usuario/:
+    get:
+      operationId: v1_usuario_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+          description: ''
+    post:
+      operationId: v1_usuario_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UsuarioCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UsuarioCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioCreate'
+          description: ''
+  /v1/usuario/{id}/:
+    get:
+      operationId: v1_usuario_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+          description: ''
+    put:
+      operationId: v1_usuario_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UsuarioCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UsuarioCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioCreate'
+          description: ''
+    patch:
+      operationId: v1_usuario_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUsuarioCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUsuarioCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUsuarioCreate'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioCreate'
+          description: ''
+    delete:
+      operationId: v1_usuario_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /v1/venda/:
+    get:
+      operationId: v1_venda_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Venda'
+          description: ''
+    post:
+      operationId: v1_venda_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendaCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VendaCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VendaCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendaCreate'
+          description: ''
+  /v1/venda/{id}/:
+    get:
+      operationId: v1_venda_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Venda'
+          description: ''
+    put:
+      operationId: v1_venda_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Venda'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Venda'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Venda'
+        required: true
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Venda'
+          description: ''
+    patch:
+      operationId: v1_venda_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVenda'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVenda'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVenda'
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Venda'
+          description: ''
+    delete:
+      operationId: v1_venda_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Activation:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+      required:
+      - token
+      - uid
+    BlankEnum:
+      enum:
+      - ''
+    CategoriaFinanceira:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        descricao:
+          type: string
+          nullable: true
+          maxLength: 255
+        tipo:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/CategoriaFinanceiraTipoEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        categoria_pai:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - data_criacao
+      - id
+      - id_origem
+    CategoriaFinanceiraTipoEnum:
+      enum:
+      - Não identificado
+      - Entradas
+      - Saídas
+      type: string
+      description: |-
+        * `Não identificado` - Nao Identificado
+        * `Entradas` - Entradas
+        * `Saídas` - Saidas
+    ContaFinanceira:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        agencia:
+          type: string
+          nullable: true
+          maxLength: 255
+        conta:
+          type: string
+          nullable: true
+          maxLength: 255
+        digito_verificador:
+          type: string
+          nullable: true
+          maxLength: 10
+        descricao:
+          type: string
+          nullable: true
+          maxLength: 255
+        instituicao_financeira:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - data_criacao
+      - id
+      - id_origem
+    Estoque:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        produto:
+          type: string
+          format: uuid
+        quantidade:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        reservado:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        preco_venda:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        loja:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+      required:
+      - id
+      - preco_venda
+      - produto
+      - quantidade
+      - reservado
+    EstoqueBI:
+      type: object
+      properties:
+        loja:
+          type: string
+          maxLength: 255
+        mes:
+          type: string
+          maxLength: 3
+        ano:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        codigo:
+          type: string
+          maxLength: 255
+        imposto:
+          type: string
+          format: decimal
+        estoque_custo_unit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,6})?$
+        estoque_pecas:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,6})?$
+        custo_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,6})?$
+        estoque_vlr:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,6})?$
+        data:
+          type: string
+          format: date
+      required:
+      - ano
+      - codigo
+      - custo_total
+      - data
+      - estoque_custo_unit
+      - estoque_pecas
+      - estoque_vlr
+      - imposto
+      - loja
+      - mes
+    FormaPagamento:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        data:
+          type: string
+          format: date-time
+        valor:
+          type: number
+          format: double
+        parcelas:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        descricao:
+          type: string
+          maxLength: 255
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - data
+      - data_criacao
+      - descricao
+      - id
+      - id_origem
+      - parcelas
+      - valor
+    FormaPagamentoCreate:
+      type: object
+      properties:
+        id_origem:
+          type: string
+          maxLength: 255
+        data:
+          type: string
+          format: date-time
+        valor:
+          type: number
+          format: double
+        parcelas:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        descricao:
+          type: string
+          maxLength: 255
+      required:
+      - data
+      - descricao
+      - id_origem
+      - parcelas
+      - valor
+    Fornecedor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        documento:
+          type: string
+          nullable: true
+          maxLength: 255
+        razao_social:
+          type: string
+          nullable: true
+          maxLength: 255
+        nome_fantasia:
+          type: string
+          nullable: true
+          maxLength: 255
+        data_criacao:
+          type: string
+          format: date-time
+      required:
+      - id
+      - id_origem
+    Funcionario:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        nome:
+          type: string
+          maxLength: 255
+        cpf:
+          type: string
+          nullable: true
+          maxLength: 15
+        funcao:
+          type: string
+          maxLength: 255
+        loja:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - data_criacao
+      - funcao
+      - id
+      - id_origem
+      - nome
+    InstituicaoFinanceira:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        codigo:
+          type: string
+          nullable: true
+          maxLength: 255
+        nome:
+          type: string
+          nullable: true
+          maxLength: 255
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - data_criacao
+      - id
+    ItemVenda:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        produto_descricao:
+          type: string
+        id_origem:
+          type: string
+          maxLength: 255
+        quantidade:
+          type: number
+          format: double
+        custo:
+          type: number
+          format: double
+        valor_unitario_bruto:
+          type: number
+          format: double
+        desconto:
+          type: number
+          format: double
+        acrescimo:
+          type: number
+          format: double
+        imposto_aliquota:
+          type: number
+          format: double
+        valor_unitario_liquido:
+          type: number
+          format: double
+        valor_total_liquido:
+          type: number
+          format: double
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - acrescimo
+      - custo
+      - data_criacao
+      - desconto
+      - id
+      - id_origem
+      - produto_descricao
+      - quantidade
+      - valor_total_liquido
+      - valor_unitario_bruto
+      - valor_unitario_liquido
+    ItemVendaCreate:
+      type: object
+      properties:
+        produto:
+          type: string
+          format: uuid
+        id_origem:
+          type: string
+          maxLength: 255
+        quantidade:
+          type: number
+          format: double
+        custo:
+          type: number
+          format: double
+        valor_unitario_bruto:
+          type: number
+          format: double
+        desconto:
+          type: number
+          format: double
+        acrescimo:
+          type: number
+          format: double
+        imposto_aliquota:
+          type: number
+          format: double
+        valor_unitario_liquido:
+          type: number
+          format: double
+        valor_total_liquido:
+          type: number
+          format: double
+      required:
+      - acrescimo
+      - custo
+      - desconto
+      - id_origem
+      - produto
+      - quantidade
+      - valor_total_liquido
+      - valor_unitario_bruto
+      - valor_unitario_liquido
+    Lancamento:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        data_competencia:
+          type: string
+          format: date-time
+          nullable: true
+        data_lancamento:
+          type: string
+          format: date-time
+          nullable: true
+        valor:
+          type: number
+          format: double
+          nullable: true
+        tipo:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TipoA81Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        descricao:
+          type: string
+          nullable: true
+        venda:
+          type: string
+          format: uuid
+          nullable: true
+        conta:
+          type: string
+          format: uuid
+          nullable: true
+        categoria:
+          type: string
+          format: uuid
+          nullable: true
+        fornecedor:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - data_criacao
+      - id
+      - id_origem
+    LancamentoDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        data_competencia:
+          type: string
+          format: date-time
+          nullable: true
+        data_lancamento:
+          type: string
+          format: date-time
+          nullable: true
+        valor:
+          type: number
+          format: double
+          nullable: true
+        tipo:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TipoA81Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        descricao:
+          type: string
+          nullable: true
+        venda:
+          type: string
+          format: uuid
+          nullable: true
+        conta:
+          allOf:
+          - $ref: '#/components/schemas/ContaFinanceira'
+          readOnly: true
+        categoria:
+          allOf:
+          - $ref: '#/components/schemas/CategoriaFinanceira'
+          readOnly: true
+        fornecedor:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - categoria
+      - conta
+      - data_criacao
+      - id
+      - id_origem
+    Loja:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nome:
+          type: string
+          maxLength: 255
+        documento:
+          type: string
+          maxLength: 15
+        imposto_aliquota_padrao:
+          type: number
+          format: double
+        data_criacao:
+          type: string
+          format: date-time
+      required:
+      - documento
+      - nome
+    NullEnum:
+      enum:
+      - null
+    PasswordResetConfirm:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+        new_password:
+          type: string
+      required:
+      - new_password
+      - token
+      - uid
+    PatchedCategoriaFinanceira:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        descricao:
+          type: string
+          nullable: true
+          maxLength: 255
+        tipo:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/CategoriaFinanceiraTipoEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        categoria_pai:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedContaFinanceira:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        agencia:
+          type: string
+          nullable: true
+          maxLength: 255
+        conta:
+          type: string
+          nullable: true
+          maxLength: 255
+        digito_verificador:
+          type: string
+          nullable: true
+          maxLength: 10
+        descricao:
+          type: string
+          nullable: true
+          maxLength: 255
+        instituicao_financeira:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedEstoque:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        produto:
+          type: string
+          format: uuid
+        quantidade:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        reservado:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        preco_venda:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        loja:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+    PatchedFornecedor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        documento:
+          type: string
+          nullable: true
+          maxLength: 255
+        razao_social:
+          type: string
+          nullable: true
+          maxLength: 255
+        nome_fantasia:
+          type: string
+          nullable: true
+          maxLength: 255
+        data_criacao:
+          type: string
+          format: date-time
+    PatchedFuncionario:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        nome:
+          type: string
+          maxLength: 255
+        cpf:
+          type: string
+          nullable: true
+          maxLength: 15
+        funcao:
+          type: string
+          maxLength: 255
+        loja:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedInstituicaoFinanceira:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        codigo:
+          type: string
+          nullable: true
+          maxLength: 255
+        nome:
+          type: string
+          nullable: true
+          maxLength: 255
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedLancamento:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        data_competencia:
+          type: string
+          format: date-time
+          nullable: true
+        data_lancamento:
+          type: string
+          format: date-time
+          nullable: true
+        valor:
+          type: number
+          format: double
+          nullable: true
+        tipo:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TipoA81Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        descricao:
+          type: string
+          nullable: true
+        venda:
+          type: string
+          format: uuid
+          nullable: true
+        conta:
+          type: string
+          format: uuid
+          nullable: true
+        categoria:
+          type: string
+          format: uuid
+          nullable: true
+        fornecedor:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedLoja:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nome:
+          type: string
+          maxLength: 255
+        documento:
+          type: string
+          maxLength: 15
+        imposto_aliquota_padrao:
+          type: number
+          format: double
+        data_criacao:
+          type: string
+          format: date-time
+    PatchedProduto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 50
+        referencia:
+          type: string
+          maxLength: 255
+        descricao:
+          type: string
+          nullable: true
+        grupo:
+          type: string
+          nullable: true
+          maxLength: 255
+        id_grupo_origem:
+          type: string
+          nullable: true
+          maxLength: 50
+        marca:
+          type: string
+          nullable: true
+          maxLength: 255
+        id_marca_origem:
+          type: string
+          nullable: true
+          maxLength: 50
+        gtin:
+          type: string
+          nullable: true
+          maxLength: 255
+        ativo:
+          type: boolean
+        data_criacao:
+          type: string
+          format: date-time
+    PatchedSistemaIntegrado:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 255
+        data_criacao:
+          type: string
+          format: date-time
+    PatchedTenantCreate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        documento:
+          type: string
+          maxLength: 15
+        razao_social:
+          type: string
+          nullable: true
+          maxLength: 255
+        nome_fantasia:
+          type: string
+          nullable: true
+          maxLength: 255
+        sistema_integrado:
+          type: string
+          format: uuid
+        api_document:
+          type: string
+          nullable: true
+          maxLength: 50
+        api_user:
+          type: string
+          nullable: true
+          maxLength: 50
+        api_token:
+          type: string
+          nullable: true
+          maxLength: 70
+        data_criacao:
+          type: string
+          format: date-time
+        lojas:
+          type: array
+          items:
+            $ref: '#/components/schemas/Loja'
+        db_host:
+          type: string
+          nullable: true
+          maxLength: 10
+        db_port:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        db_user:
+          type: string
+          nullable: true
+          maxLength: 30
+        db_pass:
+          type: string
+          nullable: true
+          maxLength: 50
+        db_name:
+          type: string
+          nullable: true
+          maxLength: 30
+    PatchedUser:
+      type: object
+      properties:
+        nome:
+          type: string
+          maxLength: 255
+        tenant:
+          type: string
+          format: uuid
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+    PatchedUsuarioCreate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        is_active:
+          type: boolean
+        tenant:
+          type: string
+          format: uuid
+        password:
+          type: string
+          writeOnly: true
+          title: Senha
+          maxLength: 128
+    PatchedVenda:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        data:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        numero:
+          type: string
+          nullable: true
+          maxLength: 50
+        valor_bruto:
+          type: number
+          format: double
+          nullable: true
+        acrescimo:
+          type: number
+          format: double
+          nullable: true
+        desconto:
+          type: number
+          format: double
+          nullable: true
+        credito_troca:
+          type: number
+          format: double
+          nullable: true
+        valor_liquido:
+          type: number
+          format: double
+          nullable: true
+        funcionario_nome:
+          type: string
+          nullable: true
+        loja:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+        formas_pagamento:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormaPagamento'
+          nullable: true
+        itens:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemVenda'
+          nullable: true
+    Produto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 50
+        referencia:
+          type: string
+          maxLength: 255
+        descricao:
+          type: string
+          nullable: true
+        grupo:
+          type: string
+          nullable: true
+          maxLength: 255
+        id_grupo_origem:
+          type: string
+          nullable: true
+          maxLength: 50
+        marca:
+          type: string
+          nullable: true
+          maxLength: 255
+        id_marca_origem:
+          type: string
+          nullable: true
+          maxLength: 50
+        gtin:
+          type: string
+          nullable: true
+          maxLength: 255
+        ativo:
+          type: boolean
+        data_criacao:
+          type: string
+          format: date-time
+      required:
+      - id
+      - id_origem
+      - referencia
+    ProdutoBI:
+      type: object
+      properties:
+        cod_produto:
+          type: string
+          maxLength: 255
+        desc_produto:
+          type: string
+          maxLength: 255
+        categoria:
+          type: string
+          nullable: true
+          maxLength: 255
+        fornecedor:
+          type: string
+          nullable: true
+          maxLength: 255
+        nivel_1:
+          type: string
+          nullable: true
+          maxLength: 255
+        nivel_2:
+          type: string
+          nullable: true
+          maxLength: 255
+        nivel_3:
+          type: string
+          nullable: true
+          maxLength: 255
+      required:
+      - cod_produto
+      - desc_produto
+    SendEmailReset:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    SetPasswordRetype:
+      type: object
+      properties:
+        new_password:
+          type: string
+        re_new_password:
+          type: string
+        current_password:
+          type: string
+      required:
+      - current_password
+      - new_password
+      - re_new_password
+    SetUsername:
+      type: object
+      properties:
+        current_password:
+          type: string
+        new_email:
+          type: string
+          format: email
+          title: Email
+          maxLength: 255
+      required:
+      - current_password
+      - new_email
+    SistemaIntegrado:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 255
+        data_criacao:
+          type: string
+          format: date-time
+      required:
+      - id
+      - nome
+    StatusEnum:
+      enum:
+      - Não identificado
+      - Ativa
+      type: string
+      description: |-
+        * `Não identificado` - Nao Identificado
+        * `Ativa` - Ativa
+    Tenant:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        documento:
+          type: string
+          maxLength: 15
+        razao_social:
+          type: string
+          nullable: true
+          maxLength: 255
+        nome_fantasia:
+          type: string
+          nullable: true
+          maxLength: 255
+        sistema_integrado:
+          type: string
+          format: uuid
+        api_document:
+          type: string
+          nullable: true
+          maxLength: 50
+        api_user:
+          type: string
+          nullable: true
+          maxLength: 50
+        api_token:
+          type: string
+          nullable: true
+          maxLength: 70
+        data_criacao:
+          type: string
+          format: date-time
+        lojas:
+          type: array
+          items:
+            $ref: '#/components/schemas/Loja'
+          nullable: true
+        db_host:
+          type: string
+          nullable: true
+          maxLength: 10
+        db_port:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        db_user:
+          type: string
+          nullable: true
+          maxLength: 30
+        db_pass:
+          type: string
+          nullable: true
+          maxLength: 50
+        db_name:
+          type: string
+          nullable: true
+          maxLength: 30
+      required:
+      - documento
+      - id
+      - sistema_integrado
+    TenantCreate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        documento:
+          type: string
+          maxLength: 15
+        razao_social:
+          type: string
+          nullable: true
+          maxLength: 255
+        nome_fantasia:
+          type: string
+          nullable: true
+          maxLength: 255
+        sistema_integrado:
+          type: string
+          format: uuid
+        api_document:
+          type: string
+          nullable: true
+          maxLength: 50
+        api_user:
+          type: string
+          nullable: true
+          maxLength: 50
+        api_token:
+          type: string
+          nullable: true
+          maxLength: 70
+        data_criacao:
+          type: string
+          format: date-time
+        lojas:
+          type: array
+          items:
+            $ref: '#/components/schemas/Loja'
+        db_host:
+          type: string
+          nullable: true
+          maxLength: 10
+        db_port:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        db_user:
+          type: string
+          nullable: true
+          maxLength: 30
+        db_pass:
+          type: string
+          nullable: true
+          maxLength: 50
+        db_name:
+          type: string
+          nullable: true
+          maxLength: 30
+      required:
+      - documento
+      - id
+      - lojas
+      - sistema_integrado
+    TipoA81Enum:
+      enum:
+      - Não identificado
+      - Crédito
+      - Débito
+      type: string
+      description: |-
+        * `Não identificado` - Nao Identificado
+        * `Crédito` - Credito
+        * `Débito` - Debito
+    TokenCreate:
+      type: object
+      properties:
+        password:
+          type: string
+        email:
+          type: string
+    TokenObtainPair:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - email
+      - password
+      - refresh
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token
+    User:
+      type: object
+      properties:
+        nome:
+          type: string
+          maxLength: 255
+        tenant:
+          type: string
+          format: uuid
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+      required:
+      - email
+      - id
+      - nome
+      - tenant
+    UserCreate:
+      type: object
+      properties:
+        nome:
+          type: string
+          maxLength: 255
+        tenant:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - id
+      - nome
+      - password
+      - tenant
+    UsernameResetConfirm:
+      type: object
+      properties:
+        new_email:
+          type: string
+          format: email
+          title: Email
+          maxLength: 255
+      required:
+      - new_email
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        password:
+          type: string
+          writeOnly: true
+          title: Senha
+          maxLength: 128
+        is_active:
+          type: boolean
+        is_superuser:
+          type: boolean
+          readOnly: true
+          title: Status de superusuário
+          description: Indica que este usuário tem todas as permissões sem atribuí-las
+            explicitamente.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+          title: Último login
+        tenant:
+          $ref: '#/components/schemas/Tenant'
+      required:
+      - email
+      - id
+      - is_superuser
+      - nome
+      - password
+      - tenant
+    UsuarioCreate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        is_active:
+          type: boolean
+        tenant:
+          type: string
+          format: uuid
+        password:
+          type: string
+          writeOnly: true
+          title: Senha
+          maxLength: 128
+      required:
+      - email
+      - id
+      - nome
+      - password
+      - tenant
+    Venda:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        data:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        numero:
+          type: string
+          nullable: true
+          maxLength: 50
+        valor_bruto:
+          type: number
+          format: double
+          nullable: true
+        acrescimo:
+          type: number
+          format: double
+          nullable: true
+        desconto:
+          type: number
+          format: double
+          nullable: true
+        credito_troca:
+          type: number
+          format: double
+          nullable: true
+        valor_liquido:
+          type: number
+          format: double
+          nullable: true
+        funcionario_nome:
+          type: string
+          nullable: true
+        loja:
+          type: string
+          format: uuid
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+        formas_pagamento:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormaPagamento'
+          nullable: true
+        itens:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemVenda'
+          nullable: true
+      required:
+      - data
+      - data_criacao
+      - id
+      - id_origem
+      - status
+    VendaBI:
+      type: object
+      properties:
+        loja:
+          type: string
+          maxLength: 255
+        mes:
+          type: string
+          maxLength: 3
+        ano:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        codigo:
+          type: string
+          maxLength: 255
+        custo_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,6})?$
+        venda_qnt:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,6})?$
+        venda_vlr:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,6})?$
+        descontos:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,6})?$
+        venda:
+          type: string
+          maxLength: 255
+        vendas:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,6})?$
+        lucro_bruto:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,6})?$
+        data:
+          type: string
+          format: date
+      required:
+      - ano
+      - codigo
+      - custo_total
+      - data
+      - descontos
+      - loja
+      - lucro_bruto
+      - mes
+      - venda
+      - venda_qnt
+      - venda_vlr
+      - vendas
+    VendaCreate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        id_origem:
+          type: string
+          maxLength: 255
+        data:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        numero:
+          type: string
+          nullable: true
+          maxLength: 50
+        valor_bruto:
+          type: number
+          format: double
+          nullable: true
+        acrescimo:
+          type: number
+          format: double
+          nullable: true
+        desconto:
+          type: number
+          format: double
+          nullable: true
+        credito_troca:
+          type: number
+          format: double
+          nullable: true
+        valor_liquido:
+          type: number
+          format: double
+          nullable: true
+        funcionario:
+          type: string
+          format: uuid
+          nullable: true
+        loja:
+          type: string
+          format: uuid
+          nullable: true
+        formas_pagamento:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormaPagamentoCreate'
+        itens:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemVendaCreate'
+      required:
+      - data
+      - formas_pagamento
+      - id
+      - id_origem
+      - itens
+      - status
+  securitySchemes:
+    jwtAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "JWT"
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

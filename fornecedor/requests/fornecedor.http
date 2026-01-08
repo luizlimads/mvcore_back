@@ -1,0 +1,52 @@
+### Fornecedor
+
+GET http://127.0.0.1:8000/v1/fornecedor/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwOTIzNTIxLCJpYXQiOjE3NTA4ODc1MjEsImp0aSI6IjhjMzFhMmMwYzhjYjQ1YmM4N2JmNzAzYTlmNWEyY2I4IiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.yQFgLENkW8DMqrz2mvE05mI15otxbc5qGCkhLKrAFBw
+
+###
+
+POST http://127.0.0.1:8000/v1/fornecedor/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+Content-Type: application/json
+
+{
+    "id_origem": "54543",
+    "documento": "54545415244545462",
+    "razao_social": "Fornecedor ssOtica tenant",
+    "nome_fantasia": "Nome Fantasia"
+}
+
+###
+
+GET http://127.0.0.1:8000/v1/fornecedor/990ca3ed-906d-4914-a03b-b7cebd9538c7/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+
+
+###
+
+PATCH http://127.0.0.1:8000/v1/fornecedor/990ca3ed-906d-4914-a03b-b7cebd9538c7/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+Content-Type: application/json
+
+{
+    "razao_social": "Fornecedor ssOtica Apagar 2"
+}
+
+###
+
+PUT http://127.0.0.1:8000/v1/fornecedor/990ca3ed-906d-4914-a03b-b7cebd9538c7/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+Content-Type: application/json
+
+{
+    "id_origem": "54543",
+    "documento": "54545415244545462",
+    "razao_social": "Fornecedor ssOtica Apagar 3",
+    "nome_fantasia": "Nome Fantasia",
+    "tenant": "24f639fd-03e5-4af1-bde9-bd847c2b56bc"
+}
+
+###
+
+DELETE http://127.0.0.1:8000/v1/fornecedor/990ca3ed-906d-4914-a03b-b7cebd9538c7/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4

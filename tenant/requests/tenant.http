@@ -1,0 +1,99 @@
+###
+
+GET http://127.0.0.1:8000/v1/tenant/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwOTM3NzkzLCJpYXQiOjE3NjA5MDE3OTMsImp0aSI6ImFiYWQ2ZDMxZjEyOTQ5N2M5NzAxOTMyMzVkYTE0NGYyIiwidXNlcl9pZCI6ImUwZjUxMjYxLTFkY2EtNDYxMi1iOGI2LWY4ZGMyZmNhZjUxNyJ9.tsnT6Cz9p1m1pdnJyKVDkXQrsTsDPWar_jPCp4i_Fd0
+
+### 
+
+POST http://127.0.0.1:8000/v1/tenant/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDk5NzcxLCJpYXQiOjE3NTg0NjM3NzEsImp0aSI6ImQ0NmEyOGUxZTA2YTQ2OWViMDk0ZDY3YWZiMDFjYzJiIiwidXNlcl9pZCI6ImUwOTNhYmRhLTEwZTMtNDExZS1hOWE2LTYyYmM1NzlhMWQ4NiJ9.Rw4ru8hMlQdhZSs3XEaFnFviHeIcoyFccBxYLu4lJqI
+Content-Type: application/json
+
+{
+    "documento": "12345",
+    "razao_social": "Tenant Tes",
+    "nome_fantasia": "Tenant ssOtica",
+    "sistema_integrado": "a84a2c72-03f7-4a0e-8ae6-b559400090d2",
+    "documento_api": "11406800000123",
+    "codigo_api": "JSCU-YOKG",
+    "token_api": "92YuEdT7BtrZSRnWPYe4yvSXUMzGvSVwtT8KjC561XjtAcdXio0PN6V7RXRD",
+    "lojas": [
+        {
+            "documento": "554875446",
+            "nome": "Tenant ssOtica"
+        }
+    ]
+}
+
+###
+
+GET http://127.0.0.1:8000/v1/tenant/8371834d-7642-4c96-897a-dc09296ed941/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NjEzOTAzLCJpYXQiOjE3NTk1Nzc5MDMsImp0aSI6IjNhYjA4MGMyYTIyNDRiYzFhMzZlYWY1OTY1MTZmMzhhIiwidXNlcl9pZCI6ImYzZmVkMTk3LTcxMmUtNGY1ZC1iNDA0LWEyOGFlNjhmY2M3MyJ9.1zfzphMt48OGKmQ28Y58EOnAFknXbpngVoCbc0p0Riw
+
+###
+
+PATCH http://127.0.0.1:8000/v1/tenant/741a1bc4-3304-493b-81d3-d3b2b3e91cf8/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NjEzOTAzLCJpYXQiOjE3NTk1Nzc5MDMsImp0aSI6IjNhYjA4MGMyYTIyNDRiYzFhMzZlYWY1OTY1MTZmMzhhIiwidXNlcl9pZCI6ImYzZmVkMTk3LTcxMmUtNGY1ZC1iNDA0LWEyOGFlNjhmY2M3MyJ9.1zfzphMt48OGKmQ28Y58EOnAFknXbpngVoCbc0p0Riw
+Content-Type: application/json
+
+{
+    "lojas": [
+        {
+            "documento": "554875446",
+            "nome": "Tenant ssOtica"
+        }
+    ]
+}
+
+###
+
+PUT http://127.0.0.1:8000/v1/tenant/8371834d-7642-4c96-897a-dc09296ed941/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NjEzOTAzLCJpYXQiOjE3NTk1Nzc5MDMsImp0aSI6IjNhYjA4MGMyYTIyNDRiYzFhMzZlYWY1OTY1MTZmMzhhIiwidXNlcl9pZCI6ImYzZmVkMTk3LTcxMmUtNGY1ZC1iNDA0LWEyOGFlNjhmY2M3MyJ9.1zfzphMt48OGKmQ28Y58EOnAFknXbpngVoCbc0p0Riw
+Content-Type: application/json
+
+{
+    "id": "8371834d-7642-4c96-897a-dc09296ed941",
+    "documento": "11406800000123",
+    "razao_social": "Ótica Conceito",
+    "nome_fantasia": "Conceito",
+    "sistema_integrado": "a84a2c72-03f7-4a0e-8ae6-b559400090d2",
+    "documento_api": "11406800000123",
+    "codigo_api": "JSCU-YOKG",
+    "token_api": "92YuEdT7BtrZSRnWPYe4yvSXUMzGvSVwtT8KjC561XjtAcdXio0PN6V7RXRD",
+    "data_criacao": "2025-09-28T22:49:56.991451-03:00",
+    "lojas": [
+      {
+        "id": "604227eb-c99c-4304-ad39-c1a2c6765a33",
+        "nome": "Conceito",
+        "documento": "11406800000123",
+        "imposto_aliquota_padrao": 10,
+        "data_criacao": "2025-09-28T22:49:56.992455-03:00"
+      }
+    ]
+}
+
+###
+
+DELETE http://127.0.0.1:8000/v1/tenant/cfa2a1be-7f48-443b-bc3f-60f8d2851ee6/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+
+###
+
+
+POST http://127.0.0.1:8000/v1/tenant/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwOTM3NzkzLCJpYXQiOjE3NjA5MDE3OTMsImp0aSI6ImFiYWQ2ZDMxZjEyOTQ5N2M5NzAxOTMyMzVkYTE0NGYyIiwidXNlcl9pZCI6ImUwZjUxMjYxLTFkY2EtNDYxMi1iOGI2LWY4ZGMyZmNhZjUxNyJ9.tsnT6Cz9p1m1pdnJyKVDkXQrsTsDPWar_jPCp4i_Fd0
+Content-Type: application/json
+
+{
+    "documento": "12345678",
+    "razao_social": "STi3",
+    "nome_fantasia": "Power Stock",
+    "sistema_integrado": "07b30bfd-f8c0-4d17-83c5-2c2955a6b2b7",
+    "db_host": "10.0.0.3",
+    "db_port": 3333,
+    "db_user": "consulta",
+    "db_pass": "ad3696a931b54696984bfb380e86a787",
+    "db_name": "sti3database",
+    "lojas": []
+
+}

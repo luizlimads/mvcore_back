@@ -1,0 +1,22 @@
+
+GET http://127.0.0.1:8000/v1/tenant/loja/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NjEzOTAzLCJpYXQiOjE3NTk1Nzc5MDMsImp0aSI6IjNhYjA4MGMyYTIyNDRiYzFhMzZlYWY1OTY1MTZmMzhhIiwidXNlcl9pZCI6ImYzZmVkMTk3LTcxMmUtNGY1ZC1iNDA0LWEyOGFlNjhmY2M3MyJ9.1zfzphMt48OGKmQ28Y58EOnAFknXbpngVoCbc0p0Riw
+
+###
+
+POST http://127.0.0.1:8000/v1/tenant/loja/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NjEzOTAzLCJpYXQiOjE3NTk1Nzc5MDMsImp0aSI6IjNhYjA4MGMyYTIyNDRiYzFhMzZlYWY1OTY1MTZmMzhhIiwidXNlcl9pZCI6ImYzZmVkMTk3LTcxMmUtNGY1ZC1iNDA0LWEyOGFlNjhmY2M3MyJ9.1zfzphMt48OGKmQ28Y58EOnAFknXbpngVoCbc0p0Riw
+Content-Type: application/json
+
+{
+    "nome": "Loja ssOtica",
+    "documento": "11406800000123",
+    "tenant": "8371834d-7642-4c96-897a-dc09296ed941a"
+}
+
+###
+
+GET http://127.0.0.1:8000/v1/tenant/loja/273c6e35-fdac-4a3e-97cc-96ba05d0534c/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDk5NzcxLCJpYXQiOjE3NTg0NjM3NzEsImp0aSI6ImQ0NmEyOGUxZTA2YTQ2OWViMDk0ZDY3YWZiMDFjYzJiIiwidXNlcl9pZCI6ImUwOTNhYmRhLTEwZTMtNDExZS1hOWE2LTYyYmM1NzlhMWQ4NiJ9.Rw4ru8hMlQdhZSs3XEaFnFviHeIcoyFccBxYLu4lJqI
+
+###

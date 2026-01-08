@@ -1,0 +1,80 @@
+### Venda
+
+GET http://127.0.0.1:8000/v1/venda/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NjUzNzM1LCJpYXQiOjE3NTk2MTc3MzUsImp0aSI6IjBjMTIyNDY4MDUzYTRiMTk5Zjc1MjYxOTY5ZDM1ODQ5IiwidXNlcl9pZCI6ImQwZjY1M2E3LWFjZDEtNGU5ZC05ZGVmLWM0MzM1ZDdlODg3MSJ9.6pc9I2d2xPB37QLDKZehODqBBwr1bsmCkLqTiDGomLY
+
+### 
+
+POST http://127.0.0.1:8000/v1/venda/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NTIxNDkyLCJpYXQiOjE3NTg0ODU0OTIsImp0aSI6IjI0NmZjMTAyYThlMzQwY2E5ODViMTE5MWNkZThkZGMxIiwidXNlcl9pZCI6IjQ4OWJjMzZlLWQwN2ItNDRiNS1iOWQzLTYwZTgwOWM2MTU3ZCJ9.6hSNvVtDDud0Zbj1RxOEcA4d26qkvFKDmH98kFU28Kk
+Content-Type: application/json
+
+{
+    "id_origem": "123",
+    "data": "2025-06-07T17:58:00Z",
+    "status": "Ativa",
+    "numero": "999999",
+    "valor_bruto": 222.0,
+    "acrescimo": 20.0,
+    "desconto": 10.0,
+    "credito_troca": 25.0,
+    "valor_liquido": 211.0,
+    "funcionario": "b9b926b0-e574-4e08-919c-4a04c8d4731a",
+    "loja": "5051a851-a02f-49d2-9916-9dfb7d8106ef",
+    "formas_pagamento": [
+      {
+          "id_origem": "1223",
+          "data": "2025-06-07T17:58:00Z",
+          "valor": 100,
+          "parcelas": 2,
+          "descricao": "pagamento ssOtica"
+      }
+    ],
+    "itens": [
+      {
+        "produto": "7cd479e9-65e6-4ace-8ef0-318e1ae74b38",
+        "id_origem": "123",
+        "quantidade": 100.0,
+        "custo": 547.0,
+        "valor_unitario_bruto": 54.7,
+        "desconto": 10.0,
+        "acrescimo": 15.0,
+        "valor_unitario_liquido": 60.0,
+        "valor_total_liquido": 6000.0
+      }
+    ]
+}
+
+###
+
+GET http://127.0.0.1:8000/v1/venda/947e5a88-ff5e-40f0-a8dd-e53cd6590288/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NjUzNzM1LCJpYXQiOjE3NTk2MTc3MzUsImp0aSI6IjBjMTIyNDY4MDUzYTRiMTk5Zjc1MjYxOTY5ZDM1ODQ5IiwidXNlcl9pZCI6ImQwZjY1M2E3LWFjZDEtNGU5ZC05ZGVmLWM0MzM1ZDdlODg3MSJ9.6pc9I2d2xPB37QLDKZehODqBBwr1bsmCkLqTiDGomLY
+
+###
+
+PATCH http://127.0.0.1:8000/v1/venda/9a1bbb5b-9d5f-447e-9537-2673d831385d/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMTg3NTk0LCJpYXQiOjE3NTExNTE1OTQsImp0aSI6IjFjMjdmZDE3ZWMwNjRlYzZiMDBjZDViMGIzNzkzN2U4IiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.c47f71XpLwtXl-eFMaTesSp4dcVLW4ieq9tXCDf7q98
+Content-Type: application/json
+
+{
+    "numero": "212 ssOtica Apagar dfsafa"
+}
+
+###
+
+PUT http://127.0.0.1:8000/v1/venda/9a1bbb5b-9d5f-447e-9537-2673d831385d/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMTg3NTk0LCJpYXQiOjE3NTExNTE1OTQsImp0aSI6IjFjMjdmZDE3ZWMwNjRlYzZiMDBjZDViMGIzNzkzN2U4IiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.c47f71XpLwtXl-eFMaTesSp4dcVLW4ieq9tXCDf7q98
+Content-Type: application/json
+
+{    
+    "numero": "212 ssOtica Apagar",
+    "id_origem": "123",
+    "data": "2025-06-07T14:58:00-03:00",
+    "status": "Ativa",
+    "tenant": "24f639fd-03e5-4af1-bde9-bd847c2b56bc"
+}
+
+###
+
+DELETE http://127.0.0.1:8000/v1/venda/9a1bbb5b-9d5f-447e-9537-2673d831385d/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5NjUzNzM1LCJpYXQiOjE3NTk2MTc3MzUsImp0aSI6IjBjMTIyNDY4MDUzYTRiMTk5Zjc1MjYxOTY5ZDM1ODQ5IiwidXNlcl9pZCI6ImQwZjY1M2E3LWFjZDEtNGU5ZC05ZGVmLWM0MzM1ZDdlODg3MSJ9.6pc9I2d2xPB37QLDKZehODqBBwr1bsmCkLqTiDGomLY

@@ -1,0 +1,46 @@
+### Instituicao Financeira
+
+GET http://127.0.0.1:8000/v1/financeiro/instituicao-financeira/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMjM0NjA5LCJpYXQiOjE3NTExOTg2MDksImp0aSI6ImY0OGY0MTNmZDQ4ZjRiZWFiY2FkNzljZDRmMmM2NTlkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.8Qacyan3n-Wj4MerrT1CM9r5iDDo-LcGZkdGF-SJKr0
+
+###
+
+POST http://127.0.0.1:8000/v1/financeiro/instituicao-financeira/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMjM0NjA5LCJpYXQiOjE3NTExOTg2MDksImp0aSI6ImY0OGY0MTNmZDQ4ZjRiZWFiY2FkNzljZDRmMmM2NTlkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.8Qacyan3n-Wj4MerrT1CM9r5iDDo-LcGZkdGF-SJKr0
+Content-Type: application/json
+
+{
+    "codigo": "001",
+    "nome": "Banco teste tenant"
+}
+
+###
+
+GET http://127.0.0.1:8000/v1/financeiro/instituicao-financeira/e6f4efa3-565b-4a2b-b536-9cf4d1777667/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMjM0NjA5LCJpYXQiOjE3NTExOTg2MDksImp0aSI6ImY0OGY0MTNmZDQ4ZjRiZWFiY2FkNzljZDRmMmM2NTlkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.8Qacyan3n-Wj4MerrT1CM9r5iDDo-LcGZkdGF-SJKr0
+
+###
+
+PATCH http://127.0.0.1:8000/v1/financeiro/instituicao-financeira/e6f4efa3-565b-4a2b-b536-9cf4d1777667/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMjM0NjA5LCJpYXQiOjE3NTExOTg2MDksImp0aSI6ImY0OGY0MTNmZDQ4ZjRiZWFiY2FkNzljZDRmMmM2NTlkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.8Qacyan3n-Wj4MerrT1CM9r5iDDo-LcGZkdGF-SJKr0
+Content-Type: application/json
+
+{
+    "nome": "Inter Banco"
+}
+
+###
+
+PUT http://127.0.0.1:8000/v1/financeiro/instituicao-financeira/f1056ee5-d2bc-4e4f-bccf-a6c96924e900/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMjM0NjA5LCJpYXQiOjE3NTExOTg2MDksImp0aSI6ImY0OGY0MTNmZDQ4ZjRiZWFiY2FkNzljZDRmMmM2NTlkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.8Qacyan3n-Wj4MerrT1CM9r5iDDo-LcGZkdGF-SJKr0
+Content-Type: application/json
+
+{
+    "codigo": "002",
+    "nome": "Teste tenant"
+}
+
+###
+
+DELETE http://127.0.0.1:8000/v1/financeiro/instituicao-financeira/e6f4efa3-565b-4a2b-b536-9cf4d1777667/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMjM0NjA5LCJpYXQiOjE3NTExOTg2MDksImp0aSI6ImY0OGY0MTNmZDQ4ZjRiZWFiY2FkNzljZDRmMmM2NTlkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.8Qacyan3n-Wj4MerrT1CM9r5iDDo-LcGZkdGF-SJKr0

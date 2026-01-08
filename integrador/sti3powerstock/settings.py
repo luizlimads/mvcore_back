@@ -1,0 +1,1 @@
+SISTEMA_INTEGRADO = 'STi3 - Power Stock'

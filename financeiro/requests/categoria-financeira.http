@@ -1,0 +1,50 @@
+### Categoria Financeira
+
+GET http://127.0.0.1:8000/v1/financeiro/categoria-financeira/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMTg3NTk0LCJpYXQiOjE3NTExNTE1OTQsImp0aSI6IjFjMjdmZDE3ZWMwNjRlYzZiMDBjZDViMGIzNzkzN2U4IiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.c47f71XpLwtXl-eFMaTesSp4dcVLW4ieq9tXCDf7q98
+
+###
+
+POST http://127.0.0.1:8000/v1/financeiro/categoria-financeira/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMTg3NTk0LCJpYXQiOjE3NTExNTE1OTQsImp0aSI6IjFjMjdmZDE3ZWMwNjRlYzZiMDBjZDViMGIzNzkzN2U4IiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.c47f71XpLwtXl-eFMaTesSp4dcVLW4ieq9tXCDf7q98
+Content-Type: application/json
+
+{
+    "id_origem": "123",
+    "descricao": "Categoria tenant",
+    "tipo": "Entradas"
+}
+
+###
+
+GET http://127.0.0.1:8000/v1/financeiro/categoria-financeira/38208457-7ba2-4125-8a72-08c5fdd8b684/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMTg3NTk0LCJpYXQiOjE3NTExNTE1OTQsImp0aSI6IjFjMjdmZDE3ZWMwNjRlYzZiMDBjZDViMGIzNzkzN2U4IiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.c47f71XpLwtXl-eFMaTesSp4dcVLW4ieq9tXCDf7q98
+
+###
+
+PATCH http://127.0.0.1:8000/v1/financeiro/categoria-financeira/38208457-7ba2-4125-8a72-08c5fdd8b684/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMTg3NTk0LCJpYXQiOjE3NTExNTE1OTQsImp0aSI6IjFjMjdmZDE3ZWMwNjRlYzZiMDBjZDViMGIzNzkzN2U4IiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.c47f71XpLwtXl-eFMaTesSp4dcVLW4ieq9tXCDf7q98
+Content-Type: application/json
+
+{
+    "tipo": "Saídas"
+}
+
+###
+
+PUT http://127.0.0.1:8000/v1/financeiro/categoria-financeira/38208457-7ba2-4125-8a72-08c5fdd8b684/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMTg3NTk0LCJpYXQiOjE3NTExNTE1OTQsImp0aSI6IjFjMjdmZDE3ZWMwNjRlYzZiMDBjZDViMGIzNzkzN2U4IiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.c47f71XpLwtXl-eFMaTesSp4dcVLW4ieq9tXCDf7q98
+Content-Type: application/json
+
+{
+    "id_origem": "123",
+    "descricao": "Categoria Apagar agora",
+    "tipo": "Saídas",
+    "categoria_pai": null,
+    "tenant": "24f639fd-03e5-4af1-bde9-bd847c2b56bc"
+}
+
+###
+
+DELETE http://127.0.0.1:8000/v1/financeiro/categoria-financeira/38208457-7ba2-4125-8a72-08c5fdd8b684/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMTg3NTk0LCJpYXQiOjE3NTExNTE1OTQsImp0aSI6IjFjMjdmZDE3ZWMwNjRlYzZiMDBjZDViMGIzNzkzN2U4IiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.c47f71XpLwtXl-eFMaTesSp4dcVLW4ieq9tXCDf7q98

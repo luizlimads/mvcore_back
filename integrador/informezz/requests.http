@@ -1,0 +1,31 @@
+POST http://127.0.0.1:8000/auth/jwt/create/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "informezz@gmail.com",
+    "password": "a123456"
+}
+
+###
+
+POST http://127.0.0.1:8000/v1/integrador/informezz/loja/ HTTP/1.1
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1ODQ3NDA0LCJpYXQiOjE3NjU4MTE0MDQsImp0aSI6Ijc1YmJjMzBkYTBjNzRlZGJhYWRlY2MyMTVjNmU5N2M4IiwidXNlcl9pZCI6IjBiMDc1MTFjLTljMjEtNGFkZS05NjhmLTE5MTk0Y2U5ZDcwMiJ9.3_fMMziDx_842QBn8quMj75iSzrhpqNvhCIFohP-JvQ
+
+###
+
+POST http://127.0.0.1:8000/v1/integrador/informezz/produto/ HTTP/1.1
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1ODQ3NDA0LCJpYXQiOjE3NjU4MTE0MDQsImp0aSI6Ijc1YmJjMzBkYTBjNzRlZGJhYWRlY2MyMTVjNmU5N2M4IiwidXNlcl9pZCI6IjBiMDc1MTFjLTljMjEtNGFkZS05NjhmLTE5MTk0Y2U5ZDcwMiJ9.3_fMMziDx_842QBn8quMj75iSzrhpqNvhCIFohP-JvQ
+
+###
+
+POST http://127.0.0.1:8000/v1/integrador/informezz/estoque/ HTTP/1.1
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1ODQ3NDA0LCJpYXQiOjE3NjU4MTE0MDQsImp0aSI6Ijc1YmJjMzBkYTBjNzRlZGJhYWRlY2MyMTVjNmU5N2M4IiwidXNlcl9pZCI6IjBiMDc1MTFjLTljMjEtNGFkZS05NjhmLTE5MTk0Y2U5ZDcwMiJ9.3_fMMziDx_842QBn8quMj75iSzrhpqNvhCIFohP-JvQ
+
+###
+
+POST http://127.0.0.1:8000/v1/integrador/informezz/venda/ HTTP/1.1
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1ODQ3NDA0LCJpYXQiOjE3NjU4MTE0MDQsImp0aSI6Ijc1YmJjMzBkYTBjNzRlZGJhYWRlY2MyMTVjNmU5N2M4IiwidXNlcl9pZCI6IjBiMDc1MTFjLTljMjEtNGFkZS05NjhmLTE5MTk0Y2U5ZDcwMiJ9.3_fMMziDx_842QBn8quMj75iSzrhpqNvhCIFohP-JvQ

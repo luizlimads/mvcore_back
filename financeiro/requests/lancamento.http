@@ -1,0 +1,64 @@
+### Lançamento
+
+GET http://127.0.0.1:8000/v1/financeiro/lancamento/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyNjEyNDE2LCJpYXQiOjE3NTI1NzY0MTYsImp0aSI6ImNhNDg3YjI3YmE0NTQ4NDFiZjRlYjEzYmU1ZWFjYjhhIiwidXNlcl9pZCI6IjE4N2FjZjNhLWJkODQtNGExZi04MDhjLTFkZWYxZjgzYWQ2ZSJ9.bM7-rNJmo9-WKlSmKMlDrjiVo8xHxf1ZJypmKCT0jgs
+
+### Lançamento
+GET http://127.0.0.1:8000/v1/financeiro/lancamento/?data_lancamento_inicio=2025-02-01&data_lancamento_fim=2025-02-05 HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyNjEyNDE2LCJpYXQiOjE3NTI1NzY0MTYsImp0aSI6ImNhNDg3YjI3YmE0NTQ4NDFiZjRlYjEzYmU1ZWFjYjhhIiwidXNlcl9pZCI6IjE4N2FjZjNhLWJkODQtNGExZi04MDhjLTFkZWYxZjgzYWQ2ZSJ9.bM7-rNJmo9-WKlSmKMlDrjiVo8xHxf1ZJypmKCT0jgs
+
+###
+
+POST http://127.0.0.1:8000/v1/financeiro/lancamento/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwOTIzNTIxLCJpYXQiOjE3NTA4ODc1MjEsImp0aSI6IjhjMzFhMmMwYzhjYjQ1YmM4N2JmNzAzYTlmNWEyY2I4IiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.yQFgLENkW8DMqrz2mvE05mI15otxbc5qGCkhLKrAFBw
+Content-Type: application/json
+
+{
+    "id_origem": "123333",
+    "data_competencia": "2025-01-01",
+    "data_lancamento": "2025-01-02",
+    "valor": 102,
+    "tipo": "Crédito",
+    "descricao": "Lançamento tenant",
+    "conta": "4d0daded-2870-4ea8-adb5-6763f12c465f"
+}
+
+###
+
+GET http://127.0.0.1:8000/v1/financeiro/lancamento/4d3fb140-b0e6-4a2f-b988-e839bb9db251/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+
+###
+
+PATCH http://127.0.0.1:8000/v1/financeiro/lancamento/4d3fb140-b0e6-4a2f-b988-e839bb9db251/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+Content-Type: application/json
+
+{
+    "categoria": "38ab50bd-cf0f-44b4-be16-1c322b18b089"
+}
+
+###
+
+PUT http://127.0.0.1:8000/v1/financeiro/lancamento/4d3fb140-b0e6-4a2f-b988-e839bb9db251/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+Content-Type: application/json
+
+{
+    "id_origem": "123",
+    "data_competencia": "2025-01-01T00:00:00-03:00",
+    "data_lancamento": "2025-01-02T00:00:00-03:00",
+    "valor": 102.0,
+    "tipo": "Crédito",
+    "descricao": "Lançamento Apagar",
+    "venda": null,
+    "conta": "1789d10c-2928-4f94-afad-3017d56c5446",
+    "categoria": "38ab50bd-cf0f-44b4-be16-1c322b18b089",
+    "fornecedor": null,
+    "tenant": "24f639fd-03e5-4af1-bde9-bd847c2b56bc"
+}
+
+###
+
+DELETE http://127.0.0.1:8000/v1/financeiro/lancamento/4d3fb140-b0e6-4a2f-b988-e839bb9db251/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4

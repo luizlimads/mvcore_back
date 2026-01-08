@@ -1,0 +1,61 @@
+### Produto
+
+GET http://127.0.0.1:8000/v1/produto/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NTIxNDkyLCJpYXQiOjE3NTg0ODU0OTIsImp0aSI6IjI0NmZjMTAyYThlMzQwY2E5ODViMTE5MWNkZThkZGMxIiwidXNlcl9pZCI6IjQ4OWJjMzZlLWQwN2ItNDRiNS1iOWQzLTYwZTgwOWM2MTU3ZCJ9.6hSNvVtDDud0Zbj1RxOEcA4d26qkvFKDmH98kFU28Kk
+
+###
+
+POST http://127.0.0.1:8000/v1/produto/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+Content-Type: application/json
+
+{
+    "id_origem": "dasdsaff",
+    "referencia": "Produto tenant",
+    "descricao": "produto de teste",
+    "grupo": "produto de teste",
+    "id_grupo_origem": "415435",
+    "marca": "produto de teste",
+    "id_marca_origem": "45454",
+    "gtin": "5454",
+    "ativo": true
+}
+
+###
+
+GET http://127.0.0.1:8000/v1/produto/476a15b2-4ce8-442c-b0e8-b2d3d7240db3/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+
+###
+
+PATCH http://127.0.0.1:8000/v1/produto/476a15b2-4ce8-442c-b0e8-b2d3d7240db3/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+Content-Type: application/json
+
+{
+    "referencia": "Produto ssOtica dvvbgfsb"
+}
+
+###
+
+PUT http://127.0.0.1:8000/v1/produto/476a15b2-4ce8-442c-b0e8-b2d3d7240db3/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4
+Content-Type: application/json
+
+{
+    "id_origem": "dasdsaff",
+    "referencia": "Produto ssOtica apagar",
+    "descricao": "produto de teste",
+    "grupo": "produto de teste",
+    "id_grupo_origem": "415435",
+    "marca": "produto de teste",
+    "id_marca_origem": "45454",
+    "gtin": "5454",
+    "ativo": true,
+    "tenant": "24f639fd-03e5-4af1-bde9-bd847c2b56bc"
+}
+
+###
+
+DELETE http://127.0.0.1:8000/v1/produto/476a15b2-4ce8-442c-b0e8-b2d3d7240db3/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4

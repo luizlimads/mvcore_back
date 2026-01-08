@@ -1,0 +1,49 @@
+### Usuário
+GET http://127.0.0.1:8000/v1/usuario/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDk5NzcxLCJpYXQiOjE3NTg0NjM3NzEsImp0aSI6ImQ0NmEyOGUxZTA2YTQ2OWViMDk0ZDY3YWZiMDFjYzJiIiwidXNlcl9pZCI6ImUwOTNhYmRhLTEwZTMtNDExZS1hOWE2LTYyYmM1NzlhMWQ4NiJ9.Rw4ru8hMlQdhZSs3XEaFnFviHeIcoyFccBxYLu4lJqI
+
+###
+
+GET http://127.0.0.1:8000/v1/usuario/489bc36e-d07b-44b5-b9d3-60e809c6157d HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NTIxNDkyLCJpYXQiOjE3NTg0ODU0OTIsImp0aSI6IjI0NmZjMTAyYThlMzQwY2E5ODViMTE5MWNkZThkZGMxIiwidXNlcl9pZCI6IjQ4OWJjMzZlLWQwN2ItNDRiNS1iOWQzLTYwZTgwOWM2MTU3ZCJ9.6hSNvVtDDud0Zbj1RxOEcA4d26qkvFKDmH98kFU28Kk
+
+###
+
+POST http://127.0.0.1:8000/v1/usuario/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMjQ4NDU3LCJpYXQiOjE3NTEyMTI0NTcsImp0aSI6IjNmZDgyMmZjMGQ5ZDQ3N2Q5NTBkOWNiYzRmMjBmYjZiIiwidXNlcl9pZCI6Ijg0YmUwMTgxLTU1ZmUtNDM1YS05MDkxLWQxNDUxZTYyZTg4NSJ9.ev9n6_SBIS9llDeVanJAWQiHx1zF_dGjQwaBIn_V5dY
+Content-Type: application/json
+
+{
+    "email": "ssotica@ssotica.com",
+    "nome": "ssotica",
+    "password": "ssotica",
+    "tenant": "41b63500-182c-4c34-86a3-abdc2ab4d216"
+}
+
+###
+PUT http://127.0.0.1:8000/v1/usuario/99eeda46-3cd1-464f-a3d3-b29c0aa3136d/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMTY1ODY5LCJpYXQiOjE3NTExMjk4NjksImp0aSI6IjViMTBmNThmZjk2MzQ1YTBiNDdhNGY2YTIwODcxMzAyIiwidXNlcl9pZCI6IjA5ODAxMWMzLTRkMjktNDM0Ny04MmNmLWQ4ZTM5OGE2OGNiMCJ9.0T0Vs40GPyuqYs62e_vyOQg_M1gusa_XIm3JSPvqAH0
+Content-Type: application/json
+
+{
+    "id": "99eeda46-3cd1-464f-a3d3-b29c0aa3136d",
+    "email": "ssotica@ssotica.com",
+    "nome": "ssotica teste",
+    "password": "ssotica",
+    "tenant": "00000000-0000-0000-0000-000000000001"
+}
+
+###
+
+PATCH  http://127.0.0.1:8000/v1/usuario/489bc36e-d07b-44b5-b9d3-60e809c6157d/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDk5NzcxLCJpYXQiOjE3NTg0NjM3NzEsImp0aSI6ImQ0NmEyOGUxZTA2YTQ2OWViMDk0ZDY3YWZiMDFjYzJiIiwidXNlcl9pZCI6ImUwOTNhYmRhLTEwZTMtNDExZS1hOWE2LTYyYmM1NzlhMWQ4NiJ9.Rw4ru8hMlQdhZSs3XEaFnFviHeIcoyFccBxYLu4lJqI
+Content-Type: application/json
+
+{
+    "password": "123456",
+    "is_active": true
+}
+
+###
+DELETE http://127.0.0.1:8000/v1/usuario/5a7f027a-a436-41e8-a574-a9708e06d7e9/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwNjUxNzkyLCJpYXQiOjE3NTA2MTU3NzcsImp0aSI6IjA1NDgxMDk1NzM3ZjQyYmJhYjVlZGJlZjYwZDMwZmRkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.MbHVNPEUDEYAQxSJpFy9kYocXj2OVXleMbP4mFkqpQ4

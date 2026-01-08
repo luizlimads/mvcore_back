@@ -1,0 +1,52 @@
+### Funcionario
+
+GET http://127.0.0.1:8000/v1/funcionario/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NTIxNDkyLCJpYXQiOjE3NTg0ODU0OTIsImp0aSI6IjI0NmZjMTAyYThlMzQwY2E5ODViMTE5MWNkZThkZGMxIiwidXNlcl9pZCI6IjQ4OWJjMzZlLWQwN2ItNDRiNS1iOWQzLTYwZTgwOWM2MTU3ZCJ9.6hSNvVtDDud0Zbj1RxOEcA4d26qkvFKDmH98kFU28Kk
+
+###
+
+POST http://127.0.0.1:8000/v1/funcionario/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDk5NzcxLCJpYXQiOjE3NTg0NjM3NzEsImp0aSI6ImQ0NmEyOGUxZTA2YTQ2OWViMDk0ZDY3YWZiMDFjYzJiIiwidXNlcl9pZCI6ImUwOTNhYmRhLTEwZTMtNDExZS1hOWE2LTYyYmM1NzlhMWQ4NiJ9.Rw4ru8hMlQdhZSs3XEaFnFviHeIcoyFccBxYLu4lJqI
+Content-Type: application/json
+
+{
+    "id_origem": "123",
+    "nome": "Funcionario testeeee",
+    "cpf": "11111111111",
+    "funcao": "Vendedora",
+    "data_criacao": "2025-05-20T17:27:07.385037-03:00"
+}
+
+###
+
+GET http://127.0.0.1:8000/v1/funcionario/3709ef08-5ad1-4dd3-850b-3867407d5251/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDk5NzcxLCJpYXQiOjE3NTg0NjM3NzEsImp0aSI6ImQ0NmEyOGUxZTA2YTQ2OWViMDk0ZDY3YWZiMDFjYzJiIiwidXNlcl9pZCI6ImUwOTNhYmRhLTEwZTMtNDExZS1hOWE2LTYyYmM1NzlhMWQ4NiJ9.Rw4ru8hMlQdhZSs3XEaFnFviHeIcoyFccBxYLu4lJqI
+
+###
+
+PATCH http://127.0.0.1:8000/v1/funcionario/3709ef08-5ad1-4dd3-850b-3867407d5251/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDk5NzcxLCJpYXQiOjE3NTg0NjM3NzEsImp0aSI6ImQ0NmEyOGUxZTA2YTQ2OWViMDk0ZDY3YWZiMDFjYzJiIiwidXNlcl9pZCI6ImUwOTNhYmRhLTEwZTMtNDExZS1hOWE2LTYyYmM1NzlhMWQ4NiJ9.Rw4ru8hMlQdhZSs3XEaFnFviHeIcoyFccBxYLu4lJqI
+Content-Type: application/json
+
+{
+    "loja": "273c6e35-fdac-4a3e-97cc-96ba05d0534c"
+}
+
+###
+
+PUT http://127.0.0.1:8000/v1/funcionario/3709ef08-5ad1-4dd3-850b-3867407d5251/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU4NDk5NzcxLCJpYXQiOjE3NTg0NjM3NzEsImp0aSI6ImQ0NmEyOGUxZTA2YTQ2OWViMDk0ZDY3YWZiMDFjYzJiIiwidXNlcl9pZCI6ImUwOTNhYmRhLTEwZTMtNDExZS1hOWE2LTYyYmM1NzlhMWQ4NiJ9.Rw4ru8hMlQdhZSs3XEaFnFviHeIcoyFccBxYLu4lJqI
+Content-Type: application/json
+
+{
+    "id_origem": "123",
+    "nome": "Funcionario testeeee",
+    "cpf": "11111111111",
+    "funcao": "Vendedora",
+    "loja": "273c6e35-fdac-4a3e-97cc-96ba05d0534c"
+}
+
+###
+
+DELETE http://127.0.0.1:8000/v1/funcionario/a7505b3a-2437-459a-93fd-cb20020fcaf3/ HTTP/1.1
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUxMjM0NjA5LCJpYXQiOjE3NTExOTg2MDksImp0aSI6ImY0OGY0MTNmZDQ4ZjRiZWFiY2FkNzljZDRmMmM2NTlkIiwidXNlcl9pZCI6IjIzNWY1MGU5LWNmY2UtNGFmOS1hNzBkLTQ1ZmY4ZTdjMWNjOCJ9.8Qacyan3n-Wj4MerrT1CM9r5iDDo-LcGZkdGF-SJKr0

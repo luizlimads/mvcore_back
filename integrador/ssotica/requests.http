@@ -1,0 +1,25 @@
+POST http://127.0.0.1:8000/auth/jwt/create/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "amoradevcovet@gmail.com",
+    "password": "a123456"
+}
+
+###
+
+POST http://127.0.0.1:8000/v1/integrador/ssotica/estoque/ HTTP/1.1
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1NzUzNTQ0LCJpYXQiOjE3NjU3MTc1NDQsImp0aSI6IjRjYzk5M2M0YTkxYzRhMDI5NGQ0Zjc2ZTkxOGNiZDcxIiwidXNlcl9pZCI6IjJkYmE3YjJmLTg0ZDctNDFjNC04NTY1LWExMjlmY2FmMDViZSJ9.N4Wl1bn3Ye4vDHcXfXQFaH3cvULMyliY--QDT4VcfvU
+
+###
+
+POST http://127.0.0.1:8000/v1/integrador/ssotica/venda/ HTTP/1.1
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1NzUzNTQ0LCJpYXQiOjE3NjU3MTc1NDQsImp0aSI6IjRjYzk5M2M0YTkxYzRhMDI5NGQ0Zjc2ZTkxOGNiZDcxIiwidXNlcl9pZCI6IjJkYmE3YjJmLTg0ZDctNDFjNC04NTY1LWExMjlmY2FmMDViZSJ9.N4Wl1bn3Ye4vDHcXfXQFaH3cvULMyliY--QDT4VcfvU
+
+###
+
+POST http://127.0.0.1:8000/v1/integrador/ssotica/financeiro/ HTTP/1.1
+Content-Type: application/json
+Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1NzUzNTQ0LCJpYXQiOjE3NjU3MTc1NDQsImp0aSI6IjRjYzk5M2M0YTkxYzRhMDI5NGQ0Zjc2ZTkxOGNiZDcxIiwidXNlcl9pZCI6IjJkYmE3YjJmLTg0ZDctNDFjNC04NTY1LWExMjlmY2FmMDViZSJ9.N4Wl1bn3Ye4vDHcXfXQFaH3cvULMyliY--QDT4VcfvU
