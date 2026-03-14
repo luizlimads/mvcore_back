@@ -1,0 +1,2 @@
+from .dispatcher_diario import sincronizar_diario
+from .dispatcher_frequente import sincronizar_frequente

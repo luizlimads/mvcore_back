@@ -1,25 +1,25 @@
 from datetime import datetime
+from integrador.tools import clean_doc
 from .client import EstoqueClient
-from produto.models import *
-from fornecedor.models import *
-import re
+from produto.models import Produto, Estoque
+from fornecedor.models import Fornecedor
 
 class EstoqueImporter:
+    BATCH_PAGINAS = 10
+
     def __init__(self, tenant, token, empresa, loja):
         self.tenant = tenant
-        self.client = EstoqueClient(token, empresa)
         self.loja = loja
+        self.client = EstoqueClient(token=token, empresa=empresa)
 
-    def clean_cnpj(self, cnpj: str) -> str:
-        return re.sub(r'[^A-Za-z0-9]', '', cnpj)
-
-    def processar_lote(self, paginas):
+    def _processar_lote(self, paginas: list[list[dict]]) -> None:
         if not paginas:
             return
 
+        ids_origem_lote = {str(item["id"]) for pagina in paginas for item in pagina}
         produtos_map = {
             str(p.id_origem): p
-            for p in Produto.objects.filter(tenant=self.tenant).iterator()
+            for p in Produto.objects.filter(tenant=self.tenant, id_origem__in=ids_origem_lote).iterator()
         }
 
         produtos_criar = []
@@ -91,7 +91,7 @@ class EstoqueImporter:
 
                     if fornecedor_final:
                         if fornecedor_final not in fornecedores_atualizar:
-                            fornecedor_final.documento = self.clean_cnpj(fornecedor.get("documento"))
+                            fornecedor_final.documento = clean_doc(fornecedor.get("documento"))
                             fornecedor_final.razao_social = fornecedor.get("razao_social")
                             fornecedor_final.nome_fantasia = fornecedor.get("nome_fantasia")
                             fornecedores_atualizar.append(fornecedor_final)
@@ -106,7 +106,7 @@ class EstoqueImporter:
                             fornecedor_final = Fornecedor(
                                 tenant_id = self.tenant,
                                 id_origem = id_origem_fornecedor,
-                                documento = self.clean_cnpj(fornecedor.get("documento")),
+                                documento = clean_doc(fornecedor.get("documento")),
                                 razao_social = fornecedor.get("razao_social"),
                                 nome_fantasia = fornecedor.get("nome_fantasia")
                             )
@@ -160,9 +160,7 @@ class EstoqueImporter:
         for fornecedor, produto in m2m_relacoes_atualizar:
             fornecedor.produtos.add(produto)
 
-        return
-
-    def executar(self):
+    def _limpa_mes_atual(self):
         now = datetime.now()
         Estoque.objects.filter(
             tenant=self.tenant,
@@ -170,16 +168,18 @@ class EstoqueImporter:
             data_criacao__month=now.month
         ).delete()
 
+    def executar(self):
+        self._limpa_mes_atual()
+
         buffer_paginas = []
         for pagina in self.client.obter_dados():
             buffer_paginas.append(pagina)
 
-            if len(buffer_paginas) == 30:
-                lote = buffer_paginas
-                buffer_paginas = []
-                self.processar_lote(lote)
+            if len(buffer_paginas) >= self.BATCH_PAGINAS:
+                self._processar_lote(buffer_paginas)
+                buffer_paginas.clear()
 
         if buffer_paginas:
-            lote = buffer_paginas
-            self.processar_lote(lote)
-        return
+            self._processar_lote(buffer_paginas)
+
+        return 0

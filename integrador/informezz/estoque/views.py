@@ -18,6 +18,7 @@ class EstoqueView(APIView):
         importador = EstoqueImporter(tenant=request.user.tenant.id, api_key=request.user.tenant.api_key)
 
         try:
+            importador.limpar_mes_corrente()
             importador.executar()
             return Response({"status": "Importação concluída com sucesso."})
         except Exception as e:

@@ -1,17 +1,19 @@
+from datetime import date
+from integrador.tools import parse_dt, DEFAULT_IMPORT_DATE
 from .client import FinanceiroClient
 from financeiro.models import *
 from financeiro.serializers import *
 from venda.models import Venda
 from fornecedor.models import Fornecedor
-from datetime import datetime
-from integrador.tools import parse_dt
 
 class FinanceiroImporter:
+    BATCH_PAGINAS = 5
+
     def __init__(self, tenant, token, cnpj):
         self.tenant = tenant
         self.client = FinanceiroClient(token, cnpj)
 
-    def processar_lote(self, paginas):
+    def _processar_lote(self, paginas):
         if not paginas:
             return
 
@@ -30,14 +32,25 @@ class FinanceiroImporter:
             for t in CategoriaFinanceira.objects.filter(tenant=self.tenant).iterator()
         }
 
+        lancamentos_ids = {
+            str(lancamento["id"])
+            for pagina in paginas
+            for lancamento in pagina
+        }
         lancamentos_map = {
             str(l.id_origem): l
-            for l in Lancamento.objects.filter(tenant=self.tenant).iterator()
+            for l in Lancamento.objects.filter(tenant=self.tenant, id_origem__in=lancamentos_ids).iterator()
         }
 
+        vendas_ids = {
+            str(lancamento["venda"]["id"])
+            for pagina in paginas
+            for lancamento in pagina
+            if lancamento.get("venda") and lancamento["venda"].get("id")
+        }
         vendas_map = {
             str(v.id_origem): v.id
-            for v in Venda.objects.filter(tenant=self.tenant).iterator()
+            for v in Venda.objects.filter(tenant=self.tenant, id_origem__in=vendas_ids).iterator()
         }
 
         fornecedor_map = {
@@ -196,20 +209,20 @@ class FinanceiroImporter:
                 ]
             )
 
-    def executar(self):
-        data_inicio = datetime(2015, 1, 1).date()
+    def executar(self, data_inicio: date | None = None):
+        if data_inicio is None:
+            data_inicio = DEFAULT_IMPORT_DATE
+
         buffer_paginas = []
 
         for pagina in self.client.obter_dados(data_inicio):
             buffer_paginas.append(pagina)
 
-            if len(buffer_paginas) == 30:
-                lote = buffer_paginas
-                buffer_paginas = []
-                self.processar_lote(lote)
+            if len(buffer_paginas) >= self.BATCH_PAGINAS:
+                self._processar_lote(buffer_paginas)
+                buffer_paginas.clear()
 
         if buffer_paginas:
-            lote = buffer_paginas
-            self.processar_lote(lote)
+            self._processar_lote(buffer_paginas)
 
-        return
+        return 0

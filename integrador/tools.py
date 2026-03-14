@@ -1,5 +1,8 @@
-from datetime import datetime
+from datetime import datetime, date
 from django.utils import timezone
+import re
+
+DEFAULT_IMPORT_DATE = date(2015, 1, 1)
 
 def fix_iso_datetime(dt_str: str) -> str:
     """
@@ -34,3 +37,14 @@ def parse_dt(dt_str: str):
     dt = dt.replace(microsecond=0)
 
     return timezone.make_aware(dt)
+
+def clean_doc(doc: str) -> str:
+    return re.sub(r'[^A-Za-z0-9]', '', doc)
+
+def deep_get(dado, path, default=None):
+    for key in path.split("."):
+        if isinstance(dado, dict):
+            dado = dado.get(key, default)
+        else:
+            return default
+    return dado

@@ -1,8 +1,7 @@
-from datetime import datetime, timedelta
-from django.db import transaction
+from integrador.tools import parse_dt, DEFAULT_IMPORT_DATE
+from decimal import Decimal
 from django.db.models import Max
-from django.utils import timezone
-
+from datetime import timedelta
 from venda.models import Venda, ItemVenda, FormaPagamento
 from tenant.models import Loja
 from funcionario.models import Funcionario
@@ -13,291 +12,236 @@ class VendaImporter:
     def __init__(self, tenant):
         self.tenant = tenant
 
-    def executar(self, conf):
-        fim_periodo = datetime.now()
+    def _processar_vendas(self, vendas):
+        if not vendas:
+            return
 
-        max_data = (
-            Venda.objects.filter(tenant=self.tenant)
-            .aggregate(max_dt=Max("data_atualizacao_origem"))
-            .get("max_dt")
-        )
-
-        if max_data:
-            inicio_periodo = max_data
-        else:
-            inicio_periodo = datetime(2015, 1, 1)
-
-        with VendaClient(conf) as client:
-            vendas = client.fetch_vendas(inicio_periodo, fim_periodo)
-            if not vendas:
-                print("Nenhuma venda encontrada nesse período.")
-                return
-
-            venda_ids = [v["id_origem"] for v in vendas]
-
-            itens = client.fetch_itens_por_vendas(venda_ids)
-            pagamentos = client.fetch_pagamentos_por_vendas(venda_ids)
-
-        lojas_qs = Loja.objects.filter(tenant=self.tenant)
-        funcionarios_qs = Funcionario.objects.filter(tenant=self.tenant)
-        produtos_qs = Produto.objects.filter(tenant=self.tenant)
-
-        lojas_map = {str(l.id_origem): l.id for l in lojas_qs}
-        funcionarios_map = {str(f.id_origem): f.id for f in funcionarios_qs}
-        produtos_map = {str(p.id_origem): p.id for p in produtos_qs}
-
-        vendas_dict = {}
-        for v in vendas:
-            key = str(v["id_origem"])
-            vendas_dict[key] = {
-                "id_origem": key,
-                "data": v["data"],
-                "status": v.get("status"),
-                "numero": v.get("numero"),
-                "valor_bruto": v.get("valor_bruto"),
-                "acrescimo": v.get("acrescimo"),
-                "desconto": v.get("desconto"),
-                "valor_liquido": v.get("valor_liquido"),
-                "funcionario": funcionarios_map.get(str(v.get("funcionario"))) if v.get("funcionario") is not None else None,
-                "loja": lojas_map.get(str(v.get("loja"))) if v.get("loja") is not None else None,
-                "data_atualizacao_origem": v.get("data"),
-                "itens": [],
-                "pagamentos": [],
-            }
-
-        item_ids_to_delete = set()
-        all_item_ids = []
-        for it in itens:
-            venda_key = str(it["venda"])
-            if venda_key not in vendas_dict:
-                continue
-            id_origem = str(it["id_origem"])
-            if it.get("cancelado"):
-                item_ids_to_delete.add(id_origem)
-                continue
-            item_normalizado = {
-                "id_origem": id_origem,
-                "produto": produtos_map.get(str(it.get("produto"))),
-                "quantidade": it.get("quantidade"),
-                "custo": it.get("custo"),
-                "valor_unitario_bruto": it.get("valor_unitario_bruto"),
-                "desconto": it.get("desconto"),
-                "acrescimo": it.get("acrescimo"),
-                "valor_unitario_liquido": it.get("valor_unitario_liquido"),
-                "valor_total_liquido": it.get("valor_total_liquido"),
-                "tamanho": it.get("tamanho"),
-                "cor": it.get("cor"),
-            }
-            vendas_dict[venda_key]["itens"].append(item_normalizado)
-            all_item_ids.append(id_origem)
-
-        all_pagamento_ids = []
-        for p in pagamentos:
-            venda_key = str(p["venda"])
-            if venda_key not in vendas_dict:
-                continue
-            pag_norm = {
-                "id_origem": str(p["id_origem"]),
-                "data": p.get("data"),
-                "valor": p.get("valor"),
-                "parcelas": p.get("parcelas"),
-                "descricao": p.get("descricao"),
-            }
-            vendas_dict[venda_key]["pagamentos"].append(pag_norm)
-            all_pagamento_ids.append(str(p["id_origem"]))
-
-        vendas_list = list(vendas_dict.values())
-        self._persistir_upsert(vendas_list, item_ids_to_delete, all_item_ids, all_pagamento_ids)
-
-    def _persistir_upsert(self, vendas, item_ids_to_delete, all_item_ids, all_pagamento_ids):
-        tenant = self.tenant
-
-        ids_origem = [v["id_origem"] for v in vendas]
-
-        existentes_qs = Venda.objects.filter(id_origem__in=ids_origem, tenant=tenant)
-        existentes_map = {str(v.id_origem): v for v in existentes_qs}
-
-        vendas_para_update = []
-        vendas_para_create = []
-
-        for v in vendas:
-            exist = existentes_map.get(v["id_origem"])
-            if exist:
-                exist.data = v.get("data") or exist.data
-                exist.status = v.get("status") or exist.status
-                exist.numero = v.get("numero") or exist.numero
-                exist.valor_bruto = v.get("valor_bruto") if v.get("valor_bruto") is not None else exist.valor_bruto
-                exist.acrescimo = v.get("acrescimo") if v.get("acrescimo") is not None else exist.acrescimo
-                exist.desconto = v.get("desconto") if v.get("desconto") is not None else exist.desconto
-                exist.valor_liquido = v.get("valor_liquido") if v.get("valor_liquido") is not None else exist.valor_liquido
-                exist.funcionario_id = v.get("funcionario") or exist.funcionario_id
-                exist.loja_id = v.get("loja") or exist.loja_id
-                exist.data_atualizacao_origem = v.get("data_atualizacao_origem") or exist.data_atualizacao_origem
-                vendas_para_update.append(exist)
-            else:
-                vendas_para_create.append(
-                    Venda(
-                        id_origem=v["id_origem"],
-                        data=v.get("data"),
-                        status=v.get("status"),
-                        numero=v.get("numero"),
-                        valor_bruto=v.get("valor_bruto"),
-                        acrescimo=v.get("acrescimo"),
-                        desconto=v.get("desconto"),
-                        valor_liquido=v.get("valor_liquido"),
-                        funcionario_id=v.get("funcionario"),
-                        loja_id=v.get("loja"),
-                        tenant_id=tenant,
-                        data_atualizacao_origem=v.get("data"),
-                    )
-                )
-
-        with transaction.atomic():
-            if vendas_para_create:
-                Venda.objects.bulk_create(vendas_para_create, batch_size=500)
-
-            if vendas_para_update:
-                Venda.objects.bulk_update(
-                    vendas_para_update,
-                    [
-                        "data",
-                        "status",
-                        "numero",
-                        "valor_bruto",
-                        "acrescimo",
-                        "desconto",
-                        "valor_liquido",
-                        "funcionario_id",
-                        "loja_id",
-                        "data_atualizacao_origem",
-                    ],
-                    batch_size=500,
-                )
-
-            todas_vendas = {
-                str(v.id_origem): v
-                for v in Venda.objects.filter(id_origem__in=ids_origem, tenant=tenant)
-            }
-
-            if item_ids_to_delete:
-                ItemVenda.objects.filter(id_origem__in=list(item_ids_to_delete), tenant=tenant).delete()
-
-            existing_items_qs = ItemVenda.objects.filter(id_origem__in=all_item_ids, tenant=tenant)
-            existing_items_map = {str(it.id_origem): it for it in existing_items_qs}
-
-            items_to_create = []
-            items_to_update = []
-
-            for v in vendas:
-                venda_obj = todas_vendas.get(v["id_origem"])
-                if not venda_obj:
-                    continue
-
-                for it in v.get("itens", []):
-                    if it.get("produto") is None:
-                        continue
-
-                    exist_it = existing_items_map.get(it["id_origem"])
-                    if exist_it:
-                        exist_it.venda = venda_obj
-                        exist_it.produto_id = it["produto"]
-                        exist_it.quantidade = it.get("quantidade") or 0
-                        exist_it.custo = it.get("custo") or 0.0
-                        exist_it.valor_unitario_bruto = it.get("valor_unitario_bruto") or 0.0
-                        exist_it.desconto = it.get("desconto") or 0.0
-                        exist_it.acrescimo = it.get("acrescimo") or 0.0
-                        exist_it.valor_unitario_liquido = it.get("valor_unitario_liquido") or 0.0
-                        exist_it.valor_total_liquido = it.get("valor_total_liquido") or 0.0
-                        exist_it.tamanho = it["tamanho"]
-                        exist_it.cor = it["cor"]
-                        items_to_update.append(exist_it)
-                    else:
-                        items_to_create.append(
-                            ItemVenda(
-                                venda=venda_obj,
-                                produto_id=it["produto"],
-                                id_origem=it["id_origem"],
-                                quantidade=it.get("quantidade") or 0,
-                                custo=it.get("custo") or 0.0,
-                                valor_unitario_bruto=it.get("valor_unitario_bruto") or 0.0,
-                                desconto=it.get("desconto") or 0.0,
-                                acrescimo=it.get("acrescimo") or 0.0,
-                                imposto_aliquota=it.get("imposto_aliquota") or 0.0,
-                                valor_unitario_liquido=it.get("valor_unitario_liquido") or 0.0,
-                                valor_total_liquido=it.get("valor_total_liquido") or 0.0,
-                                tamanho=it["tamanho"],
-                                cor=it["cor"],
-                                tenant_id=tenant,
-                            )
-                        )
-
-            if items_to_create:
-                ItemVenda.objects.bulk_create(items_to_create, batch_size=1000)
-            if items_to_update:
-                ItemVenda.objects.bulk_update(
-                    items_to_update,
-                    [
-                        "venda",
-                        "produto_id",
-                        "quantidade",
-                        "custo",
-                        "valor_unitario_bruto",
-                        "desconto",
-                        "acrescimo",
-                        "valor_unitario_liquido",
-                        "valor_total_liquido",
-                        "tamanho",
-                        "cor"
-                    ],
-                    batch_size=1000,
-                )
-
-            existing_pags_qs = FormaPagamento.objects.filter(id_origem__in=all_pagamento_ids, tenant=tenant)
-            existing_pags_map = {str(p.id_origem): p for p in existing_pags_qs}
-
-            pags_to_create = []
-            pags_to_update = []
-
-            for v in vendas:
-                venda_obj = todas_vendas.get(v["id_origem"])
-                if not venda_obj:
-                    continue
-                for p in v.get("pagamentos", []):
-                    exist_p = existing_pags_map.get(p["id_origem"])
-                    if exist_p:
-                        exist_p.venda = venda_obj
-                        exist_p.data = p.get("data") or exist_p.data
-                        exist_p.valor = p.get("valor") or exist_p.valor
-                        exist_p.parcelas = p.get("parcelas") or exist_p.parcelas
-                        exist_p.descricao = p.get("descricao") or exist_p.descricao
-                        pags_to_update.append(exist_p)
-                    else:
-                        pags_to_create.append(
-                            FormaPagamento(
-                                venda=venda_obj,
-                                id_origem=p["id_origem"],
-                                data=p.get("data"),
-                                valor=p.get("valor") or 0.0,
-                                parcelas=p.get("parcelas") or 1,
-                                descricao=p.get("descricao") or "",
-                                tenant_id=tenant,
-                            )
-                        )
-
-            if pags_to_create:
-                FormaPagamento.objects.bulk_create(pags_to_create, batch_size=500)
-            if pags_to_update:
-                FormaPagamento.objects.bulk_update(
-                    pags_to_update, ["venda", "data", "valor", "parcelas", "descricao"], batch_size=500
-                )
-
-        return {
-            "vendas_processadas": len(vendas),
-            "itens_deletados": len(item_ids_to_delete),
-            "itens_criados": len(items_to_create),
-            "itens_atualizados": len(items_to_update),
-            "pagamentos_criados": len(pags_to_create),
-            "pagamentos_atualizados": len(pags_to_update),
-            "vendas_criadas": len(vendas_para_create),
-            "vendas_atualizadas": len(vendas_para_update),
+        lojas_map = {
+            str(l.id_origem): l
+            for l in Loja.objects.filter(tenant=self.tenant.id).iterator()
         }
+
+        funcionarios_map = {
+            str(f.id_origem): f
+            for f in Funcionario.objects.filter(tenant=self.tenant).iterator()
+        }
+
+        venda_ids = [
+            str(venda["id_origem"])
+            for venda in vendas
+        ]
+        vendas_map = {
+            str(v.id_origem): v
+            for v in Venda.objects.filter(id_origem__in=venda_ids, tenant=self.tenant.id).iterator()
+        }
+
+        vendas_criar = []
+        vendas_atualizar = []
+
+        for venda in vendas:
+            loja = lojas_map.get(str(venda["loja"]))
+            funcionario = funcionarios_map.get(str(venda["funcionario"]))
+
+            venda_final = vendas_map.get(str(venda["id_origem"]))
+            if venda_final:
+                venda_final.data = parse_dt(venda["data"])
+                venda_final.status = venda["status"]
+                venda_final.numero = venda["numero"]
+                venda_final.valor_bruto = Decimal(venda["valor_bruto"])
+                venda_final.acrescimo = Decimal(venda["acrescimo"])
+                venda_final.desconto = Decimal(venda["desconto"])
+                venda_final.valor_liquido = Decimal(venda["valor_liquido"])
+                venda_final.funcionario_id = funcionario.id
+                venda_final.loja_id = loja.id
+                venda_final.data_atualizacao_origem = parse_dt(venda["data"])
+                vendas_atualizar.append(venda_final)
+            else:
+                vendas_criar.append(Venda(
+                    id_origem = venda["id_origem"],
+                    data = parse_dt(venda["data"]),
+                    status = venda["status"],
+                    numero = venda["numero"],
+                    valor_bruto = Decimal(venda["valor_bruto"]),
+                    acrescimo = Decimal(venda["acrescimo"]),
+                    desconto = Decimal(venda["desconto"]),
+                    valor_liquido = Decimal(venda["valor_liquido"]),
+                    funcionario_id = funcionario.id,
+                    tenant = self.tenant,
+                    loja_id = loja.id,
+                    data_atualizacao_origem = parse_dt(venda["data"])
+                ))
+
+        if vendas_criar:
+            Venda.objects.bulk_create(vendas_criar, batch_size=500)
+
+        if vendas_atualizar:
+            Venda.objects.bulk_update(
+                vendas_atualizar,
+                ["data","status","numero","valor_bruto","acrescimo","desconto",
+                 "valor_liquido","funcionario", "loja", "data_atualizacao_origem"
+                ]
+                ,batch_size=500
+            )
+
+    def _processar_vendas_itens(self, itens):
+        if not itens:
+            return
+
+        venda_ids = [
+            str(item["venda"])
+            for item in itens
+        ]
+        vendas_map = {
+            str(v.id_origem): v
+            for v in Venda.objects.filter(id_origem__in=venda_ids, tenant=self.tenant.id).iterator()
+        }
+
+        produto_ids = [
+            str(item["produto"])
+            for item in itens
+        ]
+        produtos_map = {
+            str(p.id_origem): p
+            for p in Produto.objects.filter(id_origem__in=produto_ids, tenant=self.tenant.id).iterator()
+        }
+
+        item_ids = [
+            str(item["id_origem"])
+            for item in itens
+        ]
+        itens_map = {
+            str(i.id_origem): i
+            for i in ItemVenda.objects.filter(id_origem__in=item_ids, tenant=self.tenant.id).iterator()
+        }
+
+        itens_criar = []
+        itens_atualizar = []
+        itens_deletar = []
+
+        for item in itens:
+            if item.get("cancelado"):
+                itens_deletar.append(str(item.get("id_origem")))
+                continue
+
+            venda = vendas_map.get(str(item.get("venda")))
+            if not venda:
+                continue
+
+            produto = produtos_map.get(str(item.get("produto")))
+            if not produto:
+                continue
+
+            item_final = itens_map.get(str(item.get("id_origem")))
+            if item_final:
+                item_final.quantidade = item.get("quantidade")
+                item_final.custo = item.get("custo")
+                item_final.valor_unitario_bruto = item.get("valor_unitario_bruto")
+                item_final.desconto = item.get("desconto")
+                item_final.acrescimo = item.get("acrescimo")
+                item_final.valor_unitario_liquido = item.get("valor_unitario_liquido")
+                item_final.valor_total_liquido = item.get("valor_total_liquido")
+                item_final.tamanho = item.get("tamanho")
+                item_final.cor = item.get("cor")
+                itens_atualizar.append(item_final)
+            else:
+                itens_criar.append(ItemVenda(
+                    produto_id = produto.id,
+                    venda_id = venda.id,
+                    id_origem = str(item.get("id_origem")),
+                    quantidade = item.get("quantidade"),
+                    custo = item.get("custo"),
+                    valor_unitario_bruto = item.get("valor_unitario_bruto"),
+                    desconto = item.get("desconto"),
+                    acrescimo = item.get("acrescimo"),
+                    valor_unitario_liquido = item.get("valor_unitario_liquido"),
+                    valor_total_liquido = item.get("valor_total_liquido"),
+                    tamanho = item.get("tamanho"),
+                    cor = item.get("cor"),
+                    tenant_id = self.tenant.id
+                ))
+
+        if itens_deletar:
+            ItemVenda.objects.filter(id_origem__in=itens_deletar, tenant=self.tenant.id).delete()
+
+        if itens_criar:
+            ItemVenda.objects.bulk_create(itens_criar, batch_size=500)
+
+        if itens_atualizar:
+            ItemVenda.objects.bulk_update(
+                itens_atualizar,
+                ["quantidade","custo","valor_unitario_bruto","desconto","acrescimo",
+                 "valor_unitario_liquido","valor_total_liquido", "tamanho", "cor"
+                ],
+                batch_size=500
+            )
+
+    def _processar_vendas_pagamentos(self, pagamentos):
+        if not pagamentos:
+            return
+
+        venda_ids = [
+            str(pagamento["venda"])
+            for pagamento in pagamentos
+        ]
+        vendas_map = {
+            str(v.id_origem): v
+            for v in Venda.objects.filter(id_origem__in=venda_ids, tenant=self.tenant.id).iterator()
+        }
+
+        pagamento_ids = [
+            str(pagamento["id_origem"])
+            for pagamento in pagamentos
+        ]
+        pagamentos_map = {
+            str(p.id_origem): p
+            for p in FormaPagamento.objects.filter(id_origem__in=pagamento_ids, tenant=self.tenant.id).iterator()
+        }
+
+        pagamentos_criar = []
+        pagamentos_atualizar = []
+
+        for pagamento in pagamentos:
+            venda = vendas_map.get(str(pagamento.get("venda")))
+            if not venda:
+                continue
+
+            pagamento_final = pagamentos_map.get(str(pagamento.get("id_origem")))
+            if pagamento_final:
+                pagamento_final.data = parse_dt(pagamento.get("data"))
+                pagamento_final.valor = pagamento.get("valor")
+                pagamento_final.parcelas = pagamento.get("parcelas")
+                pagamento_final.descricao = pagamento.get("descricao")
+                pagamentos_atualizar.append(pagamento_final)
+            else:
+                pagamentos_criar.append(FormaPagamento(
+                    id_origem = str(pagamento.get("id_origem")),
+                    data = parse_dt(pagamento.get("data")),
+                    valor = pagamento.get("valor"),
+                    parcelas = pagamento.get("parcelas"),
+                    descricao = pagamento.get("descricao"),
+                    venda_id = venda.id,
+                    tenant_id = self.tenant.id
+                ))
+
+        if pagamentos_criar:
+            FormaPagamento.objects.bulk_create(pagamentos_criar, batch_size=500)
+
+        if pagamentos_atualizar:
+            FormaPagamento.objects.bulk_update(
+                pagamentos_atualizar,
+                ["data","valor","parcelas","descricao"],
+                batch_size=500
+            )
+
+    def executar(self):
+        max_date = Venda.objects.filter(tenant=self.tenant.id).aggregate(max_dt=Max("data_atualizacao_origem"))["max_dt"]
+        start_date = max_date-timedelta(days=365*2) if max_date else DEFAULT_IMPORT_DATE
+
+        with VendaClient(self.tenant) as client:
+            vendas = client.fetch_vendas(start_date)
+            self._processar_vendas(vendas)
+
+            venda_ids = [str(venda["id_origem"]) for venda in vendas]
+            self._processar_vendas_itens(client.fetch_itens_por_vendas(venda_ids))
+            self._processar_vendas_pagamentos(client.fetch_pagamentos_por_vendas(venda_ids))
+        return 0

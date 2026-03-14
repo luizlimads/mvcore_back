@@ -1,17 +1,19 @@
 import mysql.connector
 from mysql.connector import Error
+from tenant.models import Tenant
+from django.utils import timezone
 
 class VendaClient:
-    def __init__(self, conf: dict):
-        self.conf = conf
+    def __init__(self, tenant: Tenant):
+        self.tenant = tenant
 
     def __enter__(self):
         self.conn = mysql.connector.connect(
-            host=self.conf["host"],
-            port=self.conf["port"],
-            user=self.conf["user"],
-            password=self.conf["password"],
-            database=self.conf["database"],
+            host=self.tenant.db_host,
+            port=self.tenant.db_port,
+            user=self.tenant.db_user,
+            password=self.tenant.db_pass,
+            database=self.tenant.db_name
         )
         return self
 
@@ -27,12 +29,12 @@ class VendaClient:
         except Error as e:
             raise RuntimeError(f"Erro ao buscar informações: {e}")
 
-    def fetch_vendas(self, inicio_periodo, fim_periodo):
+    def fetch_vendas(self, start_date):
         return self.fetch_dados(
             """
                 SELECT
                     v.codigo AS id_origem,
-                    v.data_hora AS data,
+                    CAST(v.data_hora AS CHAR) AS data,
                     v.status AS status,
                     v.codigo AS numero,
                     v.valortotal + v.desconto - v.acrescimo AS valor_bruto,
@@ -45,12 +47,12 @@ class VendaClient:
                 WHERE v.data_hora BETWEEN %s AND %s
                 ORDER BY v.data_hora;
             """,
-            (inicio_periodo, fim_periodo)
+            (start_date, timezone.now().date())
         )
 
     def fetch_itens_por_vendas(self, venda_ids, chunk_size=800):
         if not venda_ids:
-            return []
+            return
 
         def chunks(lst, n):
             for i in range(0, len(lst), n):
@@ -61,7 +63,6 @@ class VendaClient:
             placeholders = ",".join(["%s"] * len(chunk))
             sql = f"""
                 SELECT
-                    i.codempresa AS loja,
                     i.codvenda AS venda,
                     i.codprod AS produto,
                     i.codigo AS id_origem,
@@ -86,7 +87,7 @@ class VendaClient:
 
     def fetch_pagamentos_por_vendas(self, venda_ids, chunk_size=800):
         if not venda_ids:
-            return []
+            return
 
         def chunks(lst, n):
             for i in range(0, len(lst), n):
@@ -99,7 +100,7 @@ class VendaClient:
                 SELECT
                     cp.codvenda AS venda,
                     cp.codigo AS id_origem,
-                    cp.dataemissao AS data,
+                    CAST(cp.dataemissao AS CHAR) AS data,
                     cp.valor AS valor,
                     cp.parcela AS parcelas,
                     fp.descricao AS descricao

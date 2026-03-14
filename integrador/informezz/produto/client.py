@@ -1,53 +1,44 @@
-import requests
 from integrador.informezz.settings import BASE_URL
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
+import requests
 
 class ProdutoClient:
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, timeout: int = 30):
         self.headers = {"x-api-key": api_key}
         self.url = f"{BASE_URL}/product"
+        self.timeout = timeout
         self.session = requests.Session()
-        self.max_workers = 30
 
-    def _fetch_page(self, page):
+    def _fetch_page(self, page: int, pagesize: int = 50) -> dict:
         params = {
             "pagination.pagenumber": page,
-            "pagination.pagesize": 50,
+            "pagination.pagesize": pagesize,
         }
 
-        response = self.session.get(self.url, headers=self.headers, params=params)
+        response = self.session.get(self.url, headers=self.headers, params=params, timeout=self.timeout)
         response.raise_for_status()
         payload = response.json()
 
         return {
-            "page": page,
             "data": payload["data"],
-            "hasNext": payload["metadata"]["hasNext"],
+            "totalPages": payload["metadata"]["totalPages"],
         }
 
-    def obter_dados(self):
-        current_page = 1
-        has_next = True
+    def obter_dados(self, page_start, page_end):
+        page = page_start
 
-        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            while has_next:
+        if page_end is None:
+            page_end = self.obter_total_paginas()
 
-                futures = {
-                    executor.submit(self._fetch_page, p): p
-                    for p in range(current_page, current_page + self.max_workers)
-                }
+        while page <= page_end:
+            payload = self._fetch_page(page)
+            data = payload.get("data", [])
 
-                page_results = []
-                for future in as_completed(futures):
-                    result = future.result()
-                    page_results.append(result)
+            if data:
+                yield data
 
-                page_results.sort(key=lambda x: x["page"])
+            page += 1
 
-                for res in page_results:
-                    yield res["data"]
-                    if not res["hasNext"]:
-                        return
+    def obter_total_paginas(self):
+        payload = self._fetch_page(1)
+        return payload.get("totalPages", 1)
 
-                current_page += self.max_workers

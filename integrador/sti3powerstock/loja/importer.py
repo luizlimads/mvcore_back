@@ -1,46 +1,85 @@
 from .client import LojaClient
 from tenant.models import Loja
-from tenant.serializers import LojaSerializer
-from fornecedor.models import Fornecedor
-from fornecedor.serializers import FornecedorSerializer
 from funcionario.models import Funcionario
-from funcionario.serializers import FuncionarioSerializer
 
 class LojaImporter:
     def __init__(self, tenant):
         self.tenant = tenant
 
-    def salvar(self, dado, Model, Serializer):
-        objeto = Model.objects.filter(tenant=self.tenant, id_origem=dado["id_origem"]).first()
+    def _processar_lojas(self, lojas):
+        if not lojas:
+            return
 
-        if not objeto:
-            serializer = Serializer(data=dado, context={"tenant": self.tenant})
-            serializer.is_valid(raise_exception=True)
-            objeto = serializer.save(tenant=self.tenant)
-        return objeto
-
-    def importar_lojas(self, conf):
-        with LojaClient(conf) as client:
-            lojas = client.fetch_lojas()
+        lojas_map = {
+            str(l.id_origem): l
+            for l in Loja.objects.filter(tenant=self.tenant).iterator()
+        }
+        lojas_criar = []
+        lojas_atualizar = []
 
         for loja in lojas:
-            self.salvar(loja, Loja, LojaSerializer)
+            loja_final = lojas_map.get(str(loja.get("id_origem")))
 
-    def importar_fornecedores(self, conf):
-        with LojaClient(conf) as client:
-            fornecedores = client.fetch_fornecedores()
+            if loja_final:
+                loja_final.nome = loja.get("nome")
+                loja_final.documento = loja.get("documento")
+                lojas_atualizar.append(loja_final)
+            else:
+                loja_final = Loja(
+                    tenant_id = self.tenant.id,
+                    id_origem = str(loja.get("id_origem")),
+                    nome = loja.get("nome"),
+                    documento = loja.get("documento")
+                )
+                lojas_criar.append(loja_final)
 
-        for fornecedor in fornecedores:
-            self.salvar(fornecedor, Fornecedor, FornecedorSerializer)
+        if lojas_criar:
+            Loja.objects.bulk_create(lojas_criar)
 
-    def importar_funcionarios(self, conf):
-        with LojaClient(conf) as client:
-            funcionarios = client.fetch_funcionarios()
+        if lojas_atualizar:
+            Loja.objects.bulk_update(
+                lojas_atualizar,
+                fields=["nome","documento"]
+            )
+
+    def _processar_funcionarios(self, funcionarios):
+        if funcionarios is None:
+            return
+
+        funcionarios_map = {
+            str(f.id_origem): f
+            for f in Funcionario.objects.filter(tenant=self.tenant).iterator()
+        }
+        funcionarios_criar = []
+        funcionarios_atualizar = []
 
         for funcionario in funcionarios:
-            self.salvar(funcionario, Funcionario, FuncionarioSerializer)
+            funcionario_final = funcionarios_map.get(str(funcionario.get("id_origem")))
 
-    def executar(self, conf):
-        self.importar_lojas(conf)
-        self.importar_fornecedores(conf)
-        self.importar_funcionarios(conf)
+            if funcionario_final:
+                funcionario_final.nome = funcionario.get("nome")
+                funcionario_final.funcao = funcionario.get("funcao")
+                funcionarios_atualizar.append(funcionario_final)
+            else:
+                funcionario_final = Funcionario(
+                    tenant_id = self.tenant.id,
+                    id_origem = str(funcionario.get("id_origem")),
+                    nome = funcionario.get("nome"),
+                    funcao = funcionario.get("funcao")
+                )
+                funcionarios_criar.append(funcionario_final)
+
+        if funcionarios_criar:
+            Funcionario.objects.bulk_create(funcionarios_criar)
+
+        if funcionarios_atualizar:
+            Funcionario.objects.bulk_update(
+                funcionarios_atualizar,
+                fields=["nome","funcao"]
+            )
+
+    def executar(self):
+        with LojaClient(self.tenant) as client:
+            self._processar_lojas(client.fetch_lojas())
+            self._processar_funcionarios(client.fetch_funcionarios())
+        return 0

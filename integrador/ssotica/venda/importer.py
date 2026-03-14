@@ -1,34 +1,43 @@
+from datetime import date
+from integrador.tools import parse_dt, clean_doc, DEFAULT_IMPORT_DATE
 from .client import VendaClient
-from venda.models import *
-from produto.models import *
-from funcionario.models import *
-from funcionario.serializers import *
-from integrador.tools import parse_dt
-from datetime import datetime
-import re
+from venda.models import Venda, ItemVenda, FormaPagamento
+from produto.models import Produto
+from funcionario.models import Funcionario
+from funcionario.serializers import FuncionarioSerializer
 
 class VendaImporter:
+    BATCH_PAGINAS = 5
+
     def __init__(self, tenant, token, cnpj, loja, aliquota):
         self.tenant = tenant
-        self.client = VendaClient(token, cnpj)
         self.loja = loja
         self.aliquota = aliquota
+        self.client = VendaClient(token, cnpj)
 
-    def clean_cpf(self, cpf: str) -> str:
-        return re.sub(r'[^A-Za-z0-9]', '', cpf)
-
-    def processar_lote(self, paginas):
+    def _processar_lote(self, paginas):
         if not paginas:
             return
 
+        vendas_ids = {
+            str(venda["id"])
+            for pagina in paginas
+            for venda in pagina
+        }
         vendas_map = {
             str(v.id_origem): v
-            for v in Venda.objects.filter(tenant=self.tenant).iterator()
+            for v in Venda.objects.filter(tenant=self.tenant, id_origem__in=vendas_ids).iterator()
         }
 
+        produtos_ids = {
+            str(item["produto"]["id"])
+            for pagina in paginas
+            for venda in pagina
+            for item in (venda.get("itens") or [])
+        }
         produtos_map = {
             str(p.id_origem): p
-            for p in Produto.objects.filter(tenant=self.tenant).iterator()
+            for p in Produto.objects.filter(tenant=self.tenant, id_origem__in=produtos_ids).iterator()
         }
 
         vendedores_map = {
@@ -55,7 +64,7 @@ class VendaImporter:
 
                 # Lê e grava os vendedores
                 vendedor = None
-                seller = sale.get("funcionario") or {}
+                seller = sale.get("funcionario")
                 if seller:
                     id_origem_vendedor = str(seller.get("id"))
                     vendedor = vendedores_map.get(id_origem_vendedor)
@@ -63,7 +72,7 @@ class VendaImporter:
                         payload = {
                             "id_origem": id_origem_vendedor,
                             "nome": seller.get("nome"),
-                            "cpf": self.clean_cpf(seller.get("cpf")),
+                            "cpf": clean_doc(seller.get("cpf")),
                             "funcao": "Vendedor",
                             "loja": self.loja
                         }
@@ -228,22 +237,21 @@ class VendaImporter:
         if pagamentos_criar:
             FormaPagamento.objects.filter(tenant=self.tenant, venda_id__in=pagamentos_vendas_ids).delete()
             FormaPagamento.objects.bulk_create(pagamentos_criar)
-        return
 
-    def executar(self):
-        data_inicio = datetime(2015, 1, 1).date()
+    def executar(self, data_inicio: date | None = None):
+        if data_inicio is None:
+            data_inicio = DEFAULT_IMPORT_DATE
+
         buffer_paginas = []
 
         for pagina in self.client.obter_dados(data_inicio):
             buffer_paginas.append(pagina)
 
-            if len(buffer_paginas) == 30:
-                lote = buffer_paginas
-                buffer_paginas = []
-                self.processar_lote(lote)
+            if len(buffer_paginas) >= self.BATCH_PAGINAS:
+                self._processar_lote(buffer_paginas)
+                buffer_paginas.clear()
 
         if buffer_paginas:
-            lote = buffer_paginas
-            self.processar_lote(lote)
+            self._processar_lote(buffer_paginas)
 
-        return
+        return 0

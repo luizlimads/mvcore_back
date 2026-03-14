@@ -1,17 +1,18 @@
 import mysql.connector
 from mysql.connector import Error
+from tenant.models import Tenant
 
 class LojaClient:
-    def __init__(self, conf: dict):
-        self.conf = conf
+    def __init__(self, tenant: Tenant):
+        self.tenant = tenant
 
     def __enter__(self):
         self.conn = mysql.connector.connect(
-            host=self.conf["host"],
-            port=self.conf["port"],
-            user=self.conf["user"],
-            password=self.conf["password"],
-            database=self.conf["database"],
+            host=self.tenant.db_host,
+            port=self.tenant.db_port,
+            user=self.tenant.db_user,
+            password=self.tenant.db_pass,
+            database=self.tenant.db_name
         )
         return self
 
@@ -35,18 +36,6 @@ class LojaClient:
                     REPLACE(REPLACE(REPLACE(e.cnpj, '.', ''), '-', ''), '/', '') AS documento,
                     e.codigo AS id_origem
                 FROM empresas e;
-            """
-        )
-
-    def fetch_fornecedores(self):
-        return self.fetch_dados(
-            """
-                SELECT
-                    f.codigo AS id_origem,
-                    REPLACE(REPLACE(REPLACE(f.cnpj, '.', ''), '-', ''), '/', '') AS documento,
-                    NULLIF(f.razao, '') AS razao_social,
-                    NULLIF(f.fantasia, '') AS nome_fantasia
-                FROM fornecedores f;
             """
         )
 

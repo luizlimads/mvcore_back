@@ -35,6 +35,8 @@ class Tenant(models.Model):
     db_user = models.CharField(max_length=30, null=True, blank=True)
     db_pass = models.CharField(max_length=50, null=True, blank=True)
     db_name = models.CharField(max_length=30, null=True, blank=True)
+    bi_api_key = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    bi_api_key_active = models.BooleanField(default=False)
 
     def delete(self, *args, **kwargs):
         if self.id == ADMIN_TENANT_ID:

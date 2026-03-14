@@ -1,31 +1,48 @@
+from integrador.tools import clean_doc
 from .client import LojaClient
 from tenant.models import Loja
-from tenant.serializers import LojaSerializer
-import re
 
 class LojaImporter:
     def __init__(self, tenant, api_key):
         self.tenant = tenant
         self.client = LojaClient(api_key)
 
-    def normalizar_loja(self, dado):
-        return {
-            "id_origem": dado["id"],
-            "nome": dado["name"],
-            "documento": re.sub(r'[^0-9A-Za-z]', '', dado["cnpj"])
+    def _processar_lote(self, stores):
+        lojas_map = {
+            str(l.id_origem): l
+            for l in Loja.objects.filter(tenant=self.tenant).iterator()
         }
 
-    def salvar(self, dado, Model, Serializer):
-        objeto = Model.objects.filter(id_origem=dado["id_origem"], tenant=self.tenant).first()
-        if not objeto:
-            serializer = Serializer(data=dado, context={"tenant": self.tenant})
-            serializer.is_valid(raise_exception=True)
-            objeto = serializer.save()
-        return objeto
-    
-    def executar(self):
-        dados_api = self.client.obter_dados()
+        lojas_criar = []
+        lojas_atualizar = []
 
-        for dado in dados_api:
-            json_loja = self.normalizar_loja(dado)
-            self.salvar(json_loja, Loja, LojaSerializer)
+        for store in stores:
+            id_origem_loja = str(store.get("id"))
+            loja_final = lojas_map.get(id_origem_loja)
+
+            if loja_final:
+                loja_final.nome = store.get("name")
+                loja_final.documento = clean_doc(store.get("cnpj"))
+                lojas_atualizar.append(loja_final)
+            else:
+                loja_final = Loja(
+                    tenant_id = self.tenant,
+                    id_origem = id_origem_loja,
+                    nome = store.get("name"),
+                    documento = clean_doc(store.get("cnpj"))
+                )
+                lojas_criar.append(loja_final)
+
+        if lojas_criar:
+            Loja.objects.bulk_create(lojas_criar)
+
+        if lojas_atualizar:
+            Loja.objects.bulk_update(
+                lojas_atualizar,
+                fields=["nome","documento"]
+            )
+
+    def executar(self):
+        self._processar_lote(self.client.obter_dados())
+
+        return 0

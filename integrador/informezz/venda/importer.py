@@ -1,5 +1,4 @@
-from datetime import datetime
-from integrador.tools import parse_dt
+from integrador.tools import parse_dt, DEFAULT_IMPORT_DATE
 from venda.models import Venda, ItemVenda, FormaPagamento
 from funcionario.models import Funcionario
 from produto.models import Produto
@@ -8,12 +7,13 @@ from funcionario.serializers import FuncionarioSerializer
 from .client import VendaClient
 
 class VendaImporter:
+    BATCH_PAGINAS = 10
+
     def __init__(self, tenant, api_key):
         self.tenant = tenant
         self.client = VendaClient(api_key)
-        self.batch_size = 1000
 
-    def processar_lote(self, paginas):
+    def _processar_lote(self, paginas):
         if not paginas:
             return
 
@@ -21,20 +21,33 @@ class VendaImporter:
             str(l.id_origem): l.id
             for l in Loja.objects.filter(tenant=self.tenant).only("id", "id_origem").iterator()
         }
-        
+
+        ids_origem_lote = {
+            str(item["id"])
+            for pagina in paginas
+            for item in pagina
+        }
         vendas_map = {
             str(v.id_origem): v
-            for v in Venda.objects.filter(tenant=self.tenant).iterator()
-        }
-        
-        itens_vendas_map = {
-            str(i.id_origem): i
-            for i in ItemVenda.objects.filter(tenant=self.tenant).iterator()
+            for v in Venda.objects.filter(tenant=self.tenant, id_origem__in=ids_origem_lote).iterator()
         }
 
+        venda_ids = [v.id for v in vendas_map.values()]
+        itens_vendas_map = {
+            str(i.id_origem): i
+            for i in ItemVenda.objects.filter(tenant=self.tenant, venda_id__in=venda_ids).iterator()
+        }
+
+        produtos_ids = {
+            str(produto["product"]["productId"])
+            for pagina in paginas
+            for venda in pagina
+            for produto in (venda.get("products") or [])
+            if produto.get("product") and produto["product"].get("productId")
+        }
         produtos_map = {
             str(p.id_origem): p
-            for p in Produto.objects.filter(tenant=self.tenant).iterator()
+            for p in Produto.objects.filter(tenant=self.tenant, id_origem__in=produtos_ids).iterator()
         }
 
         vendedores_map = {
@@ -50,7 +63,7 @@ class VendaImporter:
         itens_atualizar = []
 
         pagamentos_criar = []
-        pagamentos_vendas_ids = set()
+        pagamentos_criar_ids = set()
 
         for pagina in paginas:
             for sale in pagina:
@@ -169,8 +182,8 @@ class VendaImporter:
                         tenant_id=self.tenant
                     )
                     pagamentos_criar.append(pagamento_final)
-                    if venda_final.id not in pagamentos_vendas_ids:
-                        pagamentos_vendas_ids.add(venda_final.id)
+                    if venda_final.id not in pagamentos_criar_ids:
+                        pagamentos_criar_ids.add(venda_final.id)
 
         if vendas_excluir_origens:
             Venda.objects.filter(tenant=self.tenant, id_origem__in=vendas_excluir_origens).delete()
@@ -200,26 +213,24 @@ class VendaImporter:
                     "tamanho", "cor", "funcionario_id"
                 ]
             )
-        
         if pagamentos_criar:
-            FormaPagamento.objects.filter(tenant=self.tenant, venda_id__in=pagamentos_vendas_ids).delete()
+            FormaPagamento.objects.filter(tenant=self.tenant, venda_id__in=pagamentos_criar_ids).delete()
             FormaPagamento.objects.bulk_create(pagamentos_criar)
-        return
 
-    def executar(self):
-        data_inicio = datetime(2015, 1, 1).date().strftime("%Y-%m-%d")
+    def executar(self, page_start = 1, page_end = None):
         buffer_paginas = []
-        
-        for pagina in self.client.obter_dados(data_inicio):
+
+        for pagina in self.client.obter_dados(DEFAULT_IMPORT_DATE, page_start, page_end):
             buffer_paginas.append(pagina)
 
-            if len(buffer_paginas) == 30:
-                lote = buffer_paginas
-                buffer_paginas = []
-                self.processar_lote(lote)
+            if len(buffer_paginas) >= self.BATCH_PAGINAS:
+                self._processar_lote(buffer_paginas)
+                buffer_paginas.clear()
 
         if buffer_paginas:
-            lote = buffer_paginas
-            self.processar_lote(lote)
+            self._processar_lote(buffer_paginas)
 
-        return
+        return 0
+
+    def obter_total_paginas(self):
+        return self.client.obter_total_paginas(DEFAULT_IMPORT_DATE)

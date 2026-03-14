@@ -1,9 +1,8 @@
 from integrador.ssotica.settings import BASE_URL
 import requests
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class EstoqueClient:
-    def __init__(self, token: str, empresa: str):
+    def __init__(self, token: str, empresa: str, timeout: int = 30):
         self.headers = {
             "Authorization": f"Bearer {token}",
             "Accept": "application/json"
@@ -11,41 +10,28 @@ class EstoqueClient:
         self.params = {
             "empresa": empresa
         }
+        self.timeout = timeout
         self.session = requests.Session()
-        self.max_workers = 30
 
-    def _fetch_page(self, page):
+    def _fetch_page(self, page: int) -> dict:
         url = f"{BASE_URL}/produto/estoque/busca?page={page}"
-        response = self.session.get(url, headers=self.headers, params=self.params)
+        response = self.session.get(url, headers=self.headers, params=self.params, timeout=self.timeout)
         response.raise_for_status()
-        payload = response.json()
-
-        return {
-            "page": page,
-            "totalpages": payload["totalPages"],
-            "data": payload["data"],
-        }
+        return response.json()
 
     def obter_dados(self):
-        current_page = 1
+        page = 1
 
-        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            while True:
-                futures = {
-                    executor.submit(self._fetch_page, p): p
-                    for p in range(current_page, current_page + self.max_workers)
-                }
+        while True:
+            payload = self._fetch_page(page)
 
-                page_results = []
-                for future in as_completed(futures):
-                    result = future.result()
-                    page_results.append(result)
+            data = payload.get("data", [])
+            total_pages = payload.get("totalPages", 1)
 
-                page_results.sort(key=lambda x: x["page"])
+            if data:
+                yield data
 
-                for res in page_results:
-                    yield res["data"]
-                    if current_page >= res["totalpages"]:
-                        return
+            if page >= total_pages:
+                return
 
-                current_page += self.max_workers
+            page += 1
